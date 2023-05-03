@@ -8,8 +8,6 @@ export default class Site extends Component {
   constructor() {
     super()
 
-    // this.append(ce("style").apd(this.stl()), this.pug())
-
     
     editor.create(this.body.editor as HTMLElement, {
       automaticLayout: true,
