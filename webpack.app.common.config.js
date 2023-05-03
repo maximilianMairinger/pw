@@ -1,4 +1,5 @@
 const InjectPlugin = require("webpack-inject-plugin")
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 const path = require("path")
 
 
@@ -11,16 +12,38 @@ module.exports = () => {
             chunkFilename: 'dist/[name].js',
             path: path.resolve(path.dirname(''), "public"),
             publicPath: "/",
+            assetModuleFilename: 'res/dist/other/[hash][ext][query]'
         },
         resolve: {
-            extensions: ['.ts', '.js']
+            extensions: ['.ts', '.js'],
         },
         module: {
             rules: [
                 {
-                    test: /([a-zA-Z0-9\s_\\.\-\(\):])+\.static\.([a-zA-Z0-9])+$/,
-                    use: 'raw-loader',
+                    test: /\.css$/,
+                    use: ['style-loader', 'css-loader']
                 },
+                {
+                    test: /\.ttf$/,
+                    type: 'asset/resource',
+
+                },
+                // {
+                //     test: /([a-zA-Z0-9\s_\\.\-\(\):])+\.static\.([a-zA-Z0-9])+$/,
+                //     use: 'raw-loader',
+                // },
+                // {
+                //     test: /\.ttf$/,
+                //     use: [
+                //       {
+                //         loader: 'file-loader',
+                //         options: {
+                //           name: '[name].[ext]',
+                //           outputPath: 'fonts/'
+                //         }
+                //       }
+                //     ]
+                // },
                 {
                     test: /\.tsx?$/,
                     exclude: /node_modules/,
@@ -32,7 +55,7 @@ module.exports = () => {
                     },
                 },
                 {
-                    test: /\.css$/,
+                    test: /\.csss$/,
                     use: ['to-string-loader', 'css-loader'],
                 },
                 {
@@ -40,6 +63,9 @@ module.exports = () => {
                     use: ['raw-loader', 'pug-html-loader']
                 }
             ]
-        }
+        },
+        plugins: [new MonacoWebpackPlugin({
+            filename: "dist/monacoWorker/[name].worker.js"
+        })]
     }
 };

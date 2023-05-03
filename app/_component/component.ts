@@ -11,9 +11,9 @@ export default abstract class Component<T extends HTMLElement | HTMLAnchorElemen
   protected body: {[name: string]: Element | ElementList} = {}
 
 
-  constructor(bodyExtension?: T, indexName = true) {
+  constructor(bodyExtension?: T, indexName = true, shadowRoot = true) {
     super();
-    this.sr = this.attachShadow({mode: "open"});
+    this.sr = shadowRoot ? this.attachShadow({mode: "open"}) : this as any;
 
     
     if (bodyExtension !== false) {
