@@ -6,7 +6,10 @@
     "allowJs": true,
     "sourceMap": true,
     "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "lib": [
+      "deno.ns"
+    ]
   },
   "include": [
     "./app"
