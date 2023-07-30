@@ -16,6 +16,10 @@ module.exports = () => {
         },
         resolve: {
             extensions: ['.ts', '.js'],
+            fallback: {
+                "crypto": require.resolve("crypto-browserify"),
+                "stream": require.resolve("stream-browserify")
+            }
         },
         module: {
             rules: [
@@ -43,6 +47,10 @@ module.exports = () => {
                 //         }
                 //       }
                 //     ]
+                // },
+                // {
+                //     test: /\.wasm$/,
+                //     type: "webassembly/experimental",
                 // },
                 {
                     test: /\.tsx?$/,
