@@ -1,0 +1,180 @@
+:host {
+  display: block;
+} 
+
+component-body {
+  height: max-content;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  box-sizing: border-box;
+  overflow: hidden;
+  border-radius: 15px;
+}
+
+side-bar {
+  position: relative;
+  width: 50px;
+  display: block;
+  /* border-right: 1px solid black; */
+  box-sizing: border-box;
+}
+
+main-content {
+  height: 100%;
+  width: calc(100% - 50px);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+header-text {
+  font-size: 1.2em;
+  font-weight: bold;
+  padding: 10px;
+  padding-right: 15px;
+  box-sizing: border-box;
+  width: 100%;
+  height: max-content;
+  position: relative;
+  display: block;
+}
+
+component-body.onlyOneText header-text {
+  font-weight: normal;
+  font-size: 1.1em;
+  padding-top: 13px;
+  padding-bottom: 13px;
+}
+
+component-body.onlyOneText body-text, component-body.onlyOneText spacer-line {
+  display: none;
+}
+
+body-text {
+  font-size: 1em;
+  padding: 10px;
+  padding-right: 15px;
+  box-sizing: border-box;
+  width: 100%;
+  height: max-content;
+  position: relative;
+  display: block;
+}
+
+spacer-line {
+  width: 100%;
+  height: 1px;
+  display: block;
+  position: relative;
+}
+
+
+
+component-body[level="error"] side-bar {
+  background: rgb(82.044% 23% 17.753%);
+  background: color(display-p3 0.7569 0.2784 0.2157);
+}
+
+component-body[level="error"] header-text {
+  background: rgb(90.964% 61.464% 58.649%);
+  background: color(display-p3 0.8667 0.6275 0.5961);
+}
+
+component-body[level="error"] body-text {
+  background: rgb(93.849% 72.902% 71.17%);
+  background: color(display-p3 0.9059 0.7373 0.7176);
+}
+
+
+component-body[level="error"] spacer-line {
+  background: rgb(82.315% 55.712% 52.826%);
+  background: color(display-p3 0.7843 0.5686 0.5373);
+}
+
+component-body[level="error"] main-content {
+  color: rgb(47.968% 7.0067% 0.3517%);
+  color: color(display-p3 0.4392 0.1137 0.051);
+}
+
+component-body[level="error"] main-content ::selection {
+  background-color: rgba(122, 16, 0, .15);
+  background-color: color(display-p3 0.4392 0.1137 0.051 / 0.15);
+}
+
+
+
+
+
+
+
+
+component-body[level="success"] side-bar {
+  background: rgb(16.332% 63.251% 26.477%);
+  background: color(display-p3 0.3176 0.6235 0.3098);
+}
+
+component-body[level="success"] header-text {
+  background: rgb(44.52% 85.676% 52.965%);
+  background: color(display-p3 0.549 0.8471 0.5608);
+}
+
+component-body[level="success"] body-text {
+  background: rgb(64.218% 90.294% 68.508%);
+  background: color(display-p3 0.698 0.8958 0.7032);
+}
+
+
+component-body[level="success"] spacer-line {
+  background: rgb(36.095% 71.665% 43.159%);
+  background: color(display-p3 0.4516 0.7083 0.4591);
+}
+
+component-body[level="success"] main-content {
+  color: rgb(12.571% 32.599% 19.158%);
+  color: color(display-p3 0.1804 0.3216 0.2039);
+}
+
+component-body[level="success"] main-content ::selection {
+  background-color: rgba(32, 83, 49, .15);
+  background-color: color(display-p3 0.1804 0.3216 0.2039 / 0.15);
+}
+
+
+
+
+component-body[level="log"] side-bar {
+  background: rgb(6.1174% 50.967% 90.261%);
+  background: color(display-p3 0.2314 0.502 0.8745);
+}
+
+component-body[level="log"] header-text {
+  background: rgb(49.355% 74.386% 96.88%);
+  background: color(display-p3 0.549 0.7373 0.949);
+}
+
+component-body[level="log"] body-text {
+  background: rgb(67.23% 85.074% 100%);
+  background: color(display-p3 0.7083 0.8456 1);
+}
+
+
+component-body[level="log"] spacer-line {
+  background: rgb(43.021% 64.605% 84.225%);
+  background: color(display-p3 0.4778 0.6403 0.825);
+}
+
+component-body[level="log"] main-content {
+  color: rgb(5.0862% 19.919% 46.799%);
+  color: color(display-p3 0.0941 0.1961 0.451);
+}
+
+component-body[level="log"] main-content ::selection {
+  background-color: rgba(13, 51, 119, 0.15);
+  background-color: color(display-p3 0.0941 0.1961 0.451 / .15);
+}
+
+
+
+
+

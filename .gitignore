@@ -4,6 +4,7 @@ dist/
 .DS_Store
 .idea*
 .deploy
+testSvgFixer
 
 package-lock.json
 
