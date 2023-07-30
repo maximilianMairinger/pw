@@ -3,6 +3,7 @@ import chokidar from "chokidar"
 import { outlineSvg as _outlineSvg } from '@davestewart/outliner'
 import path from "node:path"
 import svgo, { Config } from "svgo"
+import { paramCase } from "change-case"
 
 type outlineSvg = (content: string) => string
 const outlineSvg = _outlineSvg as outlineSvg
@@ -13,7 +14,7 @@ const iconPath = "app/_component/_icon"
 chokidar.watch(iconPath, { ignoreInitial: true }).on("change", (path: string) => changeFunc(path, true))
 chokidar.watch(iconPath, { ignoreInitial: true }).on("add", (path: string) => changeFunc(path, false))
 
-console.log("running")
+console.log("Running iconBoilerplateHelper")
 
 
 async function changeFunc(pth: string, change: boolean) {
@@ -36,7 +37,7 @@ async function changeFunc(pth: string, change: boolean) {
       name = nameAr.join(".")
     }
 
-    console.log(`Running ${name}` + fillify ? ` and fillifying` : "")
+    console.log(`Running ${name}` + (fillify ? ` and fillifying` : ""))
     
     
     type Input = string
@@ -79,7 +80,7 @@ export default class ${capitalize(name)}Icon extends Icon {
   }
 }
 
-declareComponent("${name}-icon", ${capitalize(name)}Icon)
+declareComponent("${paramCase(name)}-icon", ${capitalize(name)}Icon)
 `
 
 
