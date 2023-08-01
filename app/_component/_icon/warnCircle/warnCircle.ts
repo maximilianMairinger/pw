@@ -6,4 +6,7 @@ export default declareComponent("warn-circle-icon", class WarnCircleIcon extends
   pug() {
     return require("./warnCircle.pug").default
   }
+  stl() {
+    return super.stl() + require("./warnCircle.css").toString()
+  }
 })

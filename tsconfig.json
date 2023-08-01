@@ -8,7 +8,9 @@
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "lib": [
-      "deno.ns"
+      "deno.ns",
+      "es2015",
+      "dom"
     ]
   },
   "include": [

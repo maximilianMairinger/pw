@@ -6,4 +6,7 @@ export default declareComponent("fire-fill-icon", class FireFillIcon extends Ico
   pug() {
     return require("./fireFill.pug").default
   }
+  stl() {
+    return super.stl() + require("./fireFill.css").toString()
+  }
 })
