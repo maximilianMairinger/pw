@@ -16,12 +16,3 @@ svg {
 :host svg *:not(tspan) {
   transition: inherit
 }
-
-
-:host(.strong) svg > g, :host(.strong) svg > path {
-  fill: var(--strong-text-color)
-}
-
-:host(.weak) svg > g, :host(.weak) svg > path {
-  fill: var(--weak-text-color) !important
-}

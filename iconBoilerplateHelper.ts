@@ -58,6 +58,15 @@ async function changeFunc(pth: string, change: boolean) {
       name = nameAr.join(".")
     }
 
+
+    if (await fileExists(path.join(iconPath, name))) {
+      console.log(`A svg under the name ${name} already exists. Skipping`)
+      Deno.remove(pth)
+      return
+    }
+
+
+
     console.log(`Running ${name}` + (fillify ? ` and fillifying` : ""))
 
 
@@ -192,7 +201,6 @@ const parseSvgDecorators = {
     if (stroke.nonEmpty && !fill.nonEmpty) {
       if (stroke.onlyOneColor) {
         stroke.allElems.forEach((el) => {
-          console.log("setting stroke to color")
           $(el).attr("stroke", "var(--color)")
         })
       }
@@ -217,7 +225,16 @@ const parseSvgDecorators = {
       const config = {
         multipass: true,
         plugins: [
-          'preset-default'
+          {
+            name: 'preset-default',
+            params: {
+              overrides: {
+                // viewBox is required to resize SVGs with CSS.
+                // @see https://github.com/svg/svgo/issues/1128
+                removeViewBox: false
+              }
+            }
+          }
         ]
       } as Config
 
@@ -226,12 +243,12 @@ const parseSvgDecorators = {
         pretty: true
       }
 
-
-      if (assumeWithoutStroke) removeAttrs.push(...strokeAttributes)
+      const myRmAttrs = [...removeAttrs]
+      if (assumeWithoutStroke) myRmAttrs.push(...strokeAttributes)
       config.plugins?.push({
         name: "removeAttrs",
         params: {
-          attrs: `(${removeAttrs.join("|")})`
+          attrs: `(${myRmAttrs.join("|")})`
         }
       })
 
@@ -253,3 +270,11 @@ const parseSvgDecorators = {
 }
 
 
+const fileExists = async (filename: string): Promise<boolean> => {
+  try {
+    await Deno.stat(filename);
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
