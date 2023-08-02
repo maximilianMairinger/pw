@@ -20,6 +20,20 @@ side-bar {
   box-sizing: border-box;
 }
 
+icon-body {
+  display: flex;
+  width: 100%;
+  aspect-ratio: 1/1;
+  position: relative;
+}
+
+icon-body > * {
+  width: 22px;
+  height: 22px;
+  margin: auto;
+  --color: rgba(255, 255, 255, .8);
+}
+
 main-content {
   height: 100%;
   width: calc(100% - 50px);
@@ -37,14 +51,33 @@ header-text {
   width: 100%;
   height: max-content;
   position: relative;
-  display: block;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+}
+
+x-icon-container {
+  display: flex;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50px;
+  height: 50px;
+}
+
+c-x-icon {
+  margin: auto;
+  width: 13px;
+  height: 13px;
+  --color: rgba(0, 0, 0, .7);
 }
 
 component-body.onlyOneText header-text {
   font-weight: normal;
-  font-size: 1.1em;
+  font-size: 1em;
   padding-top: 13px;
   padding-bottom: 13px;
+  padding-right: 40px;
 }
 
 component-body.onlyOneText body-text, component-body.onlyOneText spacer-line {
@@ -81,7 +114,7 @@ component-body[level="error"] header-text {
   background: color(display-p3 0.8667 0.6275 0.5961);
 }
 
-component-body[level="error"] body-text {
+component-body[level="error"] body-text, component-body[level="error"].onlyOneText header-text {
   background: rgb(93.849% 72.902% 71.17%);
   background: color(display-p3 0.9059 0.7373 0.7176);
 }
@@ -102,7 +135,9 @@ component-body[level="error"] main-content ::selection {
   background-color: color(display-p3 0.4392 0.1137 0.051 / 0.15);
 }
 
-
+component-body[level="error"] c-x-icon {
+  --color: color(display-p3 0.4392 0.1137 0.051 / .7);
+}
 
 
 
@@ -119,7 +154,7 @@ component-body[level="success"] header-text {
   background: color(display-p3 0.549 0.8471 0.5608);
 }
 
-component-body[level="success"] body-text {
+component-body[level="success"] body-text, component-body[level="success"].onlyOneText header-text {
   background: rgb(64.218% 90.294% 68.508%);
   background: color(display-p3 0.698 0.8958 0.7032);
 }
@@ -131,13 +166,17 @@ component-body[level="success"] spacer-line {
 }
 
 component-body[level="success"] main-content {
-  color: rgb(12.571% 32.599% 19.158%);
-  color: color(display-p3 0.1804 0.3216 0.2039);
+  color: rgb(9.1609% 27.478% 15.315%);
+  color: color(display-p3 0.1433 0.2708 0.1645);
 }
 
 component-body[level="success"] main-content ::selection {
-  background-color: rgba(32, 83, 49, .15);
+  background-color: rgba(23, 70, 39, .15);
   background-color: color(display-p3 0.1804 0.3216 0.2039 / 0.15);
+}
+
+component-body[level="success"] c-x-icon {
+  --color: color(display-p3 0.1433 0.2708 0.1645 / .7);
 }
 
 
@@ -153,7 +192,7 @@ component-body[level="log"] header-text {
   background: color(display-p3 0.549 0.7373 0.949);
 }
 
-component-body[level="log"] body-text {
+component-body[level="log"] body-text, component-body[level="log"].onlyOneText header-text {
   background: rgb(67.23% 85.074% 100%);
   background: color(display-p3 0.7083 0.8456 1);
 }
@@ -174,7 +213,9 @@ component-body[level="log"] main-content ::selection {
   background-color: color(display-p3 0.0941 0.1961 0.451 / .15);
 }
 
-
+component-body[level="log"] c-x-icon {
+  --color: color(display-p3 0.0941 0.1961 0.451 / .7);
+}
 
 
 
