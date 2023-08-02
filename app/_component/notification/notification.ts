@@ -2,6 +2,9 @@ import Component from "../component"
 import declareComponent from "../../lib/declareComponent"
 import { Data, DataBase } from "josm"
 import "./../_icon/x/x"
+import "../_themeAble/_focusAble/_formUi/_rippleButton/_blockButton/blockButton"
+import "../_themeAble/_focusAble/_formUi/_rippleButton/rippleButton"
+import "../_themeAble/_focusAble/_button/button"
 
 const iconImportIndex = {
   log: () => import("./../_icon/info/info"),
