@@ -204,6 +204,8 @@ const rootPath = "app/_component"
 
 
 if (options.watch) {
+  console.log("PugToTypes: Watching...")
+
   chokidar.watch(rootPath, { ignoreInitial: false }).on("add", (path: string) => updateComponentIndex(path, "add"))
   chokidar.watch(rootPath, { ignoreInitial: true }).on("unlink", (path: string) => updateComponentIndex(path, "remove"))
 
