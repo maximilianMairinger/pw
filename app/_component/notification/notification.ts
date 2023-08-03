@@ -1,10 +1,8 @@
 import Component from "../component"
 import declareComponent from "../../lib/declareComponent"
 import { Data, DataBase } from "josm"
-import "../_icon/xIcon/xIcon"
-import "../_themeAble/_focusAble/_formUi/_rippleButton/_blockButton/blockButton"
-import "../_themeAble/_focusAble/_formUi/_rippleButton/rippleButton"
-import "../_themeAble/_focusAble/_button/button"
+import { BodyTypes } from "./notification.types"
+
 
 const iconImportIndex = {
   log: () => import("../_icon/infoIcon/infoIcon"),
@@ -17,6 +15,7 @@ const iconImportIndex = {
 export type NotificationLevel = "log" | "warn" | "error" | "success"
 
 export default class Notification extends Component {
+  protected body: BodyTypes
 
   public level: Data<NotificationLevel>
   public bodyText: Data<string>
@@ -57,7 +56,7 @@ export default class Notification extends Component {
   }
 
   stl() {
-    return require("./notification.css").toString()
+    return super.stl() + require("./notification.css").toString()
   }
   pug() {
     return require("./notification.pug").default
