@@ -1,16 +1,16 @@
 import Component from "../component"
 import declareComponent from "../../lib/declareComponent"
 import { Data, DataBase } from "josm"
-import "./../_icon/x/x"
+import "../_icon/xIcon/xIcon"
 import "../_themeAble/_focusAble/_formUi/_rippleButton/_blockButton/blockButton"
 import "../_themeAble/_focusAble/_formUi/_rippleButton/rippleButton"
 import "../_themeAble/_focusAble/_button/button"
 
 const iconImportIndex = {
-  log: () => import("./../_icon/info/info"),
-  warn: () => import("./../_icon/warn/warn"),
-  error: () => import("./../_icon/fire2Fill/fire2Fill"),
-  success: () => import("./../_icon/check/check")
+  log: () => import("../_icon/infoIcon/infoIcon"),
+  warn: () => import("../_icon/warnIcon/warnIcon"),
+  error: () => import("../_icon/fire2FillIcon/fire2FillIcon"),
+  success: () => import("./../_icon/checkIcon/checkIcon")
 }
 
 
