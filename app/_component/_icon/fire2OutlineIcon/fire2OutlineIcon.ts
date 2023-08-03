@@ -3,10 +3,10 @@ import declareComponent from "../../../lib/declareComponent";
 
 export default class Fire2OutlineIcon extends Icon {
   pug() {
-    return require("./fire2Outline.pug").default
+    return require("./fire2OutlineIcon.pug").default
   }
   stl() {
-    return super.stl() + require("./fire2Outline.css").toString()
+    return super.stl() + require("./fire2OutlineIcon.css").toString()
   }
 }
 

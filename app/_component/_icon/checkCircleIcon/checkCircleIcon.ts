@@ -3,10 +3,10 @@ import declareComponent from "../../../lib/declareComponent";
 
 export default class CheckCircleIcon extends Icon {
   pug() {
-    return require("./checkCircle.pug").default
+    return require("./checkCircleIcon.pug").default
   }
   stl() {
-    return super.stl() + require("./checkCircle.css").toString()
+    return super.stl() + require("./checkCircleIcon.css").toString()
   }
 }
 

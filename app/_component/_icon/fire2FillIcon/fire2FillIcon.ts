@@ -3,10 +3,10 @@ import declareComponent from "../../../lib/declareComponent";
 
 export default class Fire2FillIcon extends Icon {
   pug() {
-    return require("./fire2Fill.pug").default
+    return require("./fire2FillIcon.pug").default
   }
   stl() {
-    return super.stl() + require("./fire2Fill.css").toString()
+    return super.stl() + require("./fire2FillIcon.css").toString()
   }
 }
 

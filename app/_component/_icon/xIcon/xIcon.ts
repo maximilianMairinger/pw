@@ -3,10 +3,10 @@ import declareComponent from "../../../lib/declareComponent";
 
 export default class XIcon extends Icon {
   pug() {
-    return require("./x.pug").default
+    return require("./xIcon.pug").default
   }
   stl() {
-    return super.stl() + require("./x.css").toString()
+    return super.stl() + require("./xIcon.css").toString()
   }
 }
 

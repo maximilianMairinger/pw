@@ -2,7 +2,7 @@ import BlockButton from "../blockButton";
 import delay from "delay";
 import declareComponent from "../../../../../../../lib/declareComponent";
 import Easing from "waapi-easing";
-import CheckIcon from "./../../../../../_icon/check/check"
+import CheckIcon from "./../../../../../../_icon/checkIcon/checkIcon"
 
 
 export default class LoadButton extends BlockButton {

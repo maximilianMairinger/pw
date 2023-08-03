@@ -3,10 +3,10 @@ import declareComponent from "../../../lib/declareComponent";
 
 export default class InfoIcon extends Icon {
   pug() {
-    return require("./info.pug").default
+    return require("./infoIcon.pug").default
   }
   stl() {
-    return super.stl() + require("./info.css").toString()
+    return super.stl() + require("./infoIcon.css").toString()
   }
 }
 

@@ -3,10 +3,10 @@ import declareComponent from "../../../lib/declareComponent";
 
 export default class DoubleCheckIcon extends Icon {
   pug() {
-    return require("./doubleCheck.pug").default
+    return require("./doubleCheckIcon.pug").default
   }
   stl() {
-    return super.stl() + require("./doubleCheck.css").toString()
+    return super.stl() + require("./doubleCheckIcon.css").toString()
   }
 }
 

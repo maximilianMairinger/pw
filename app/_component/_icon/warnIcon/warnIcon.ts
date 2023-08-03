@@ -3,10 +3,10 @@ import declareComponent from "../../../lib/declareComponent";
 
 export default class WarnIcon extends Icon {
   pug() {
-    return require("./warn.pug").default
+    return require("./warnIcon.pug").default
   }
   stl() {
-    return super.stl() + require("./warn.css").toString()
+    return super.stl() + require("./warnIcon.css").toString()
   }
 }
 

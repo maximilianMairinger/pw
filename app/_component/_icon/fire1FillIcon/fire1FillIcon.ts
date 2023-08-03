@@ -4,9 +4,9 @@ import declareComponent from "../../../lib/declareComponent";
 
 export default declareComponent("fire1-fill-icon", class FireFillIcon extends Icon {
   pug() {
-    return require("./fire1Fill.pug").default
+    return require("./fire1FillIcon.pug").default
   }
   stl() {
-    return super.stl() + require("./fire1Fill.css").toString()
+    return super.stl() + require("./fire1FillIcon.css").toString()
   }
 })

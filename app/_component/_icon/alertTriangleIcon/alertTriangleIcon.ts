@@ -3,10 +3,10 @@ import declareComponent from "../../../lib/declareComponent";
 
 export default class AlertTriangleIcon extends Icon {
   pug() {
-    return require("./alertTriangle.pug").default
+    return require("./alertTriangleIcon.pug").default
   }
   stl() {
-    return super.stl() + require("./alertTriangle.css").toString()
+    return super.stl() + require("./alertTriangleIcon.css").toString()
   }
 }
 
