@@ -12,7 +12,6 @@ const outlineSvg = _outlineSvg as outlineSvg
 
 const iconPath = "app/_component/_icon"
 
-chokidar.watch(iconPath, { ignoreInitial: true }).on("change", (path: string) => changeFunc(path, true))
 chokidar.watch(iconPath, { ignoreInitial: true }).on("add", (path: string) => changeFunc(path, false))
 
 console.log("Running iconBoilerplateHelper")
@@ -99,11 +98,11 @@ async function changeFunc(pth: string, change: boolean) {
       strokeColor = undefined
     }
 
-    await Deno.mkdir(path.join(iconPath, name), { recursive: true })
+    await Deno.mkdir(path.join(iconPath, `${name}Icon`), { recursive: true })
     await Promise.all([
-      Deno.writeTextFile(path.join(iconPath, name, `${name}.pug`), parsedSvg, { createNew: true }),
-      Deno.writeTextFile(path.join(iconPath, name, `${name}.ts`), tsTemplate({name}), { createNew: true }),
-      Deno.writeTextFile(path.join(iconPath, name, `${name}.css`), cssTemplate({ color, strokeColor }), { createNew: true }),
+      Deno.writeTextFile(path.join(iconPath, name, `${name}Icon.pug`), parsedSvg, { createNew: true }),
+      Deno.writeTextFile(path.join(iconPath, name, `${name}Icon.ts`), tsTemplate({name}), { createNew: true }),
+      Deno.writeTextFile(path.join(iconPath, name, `${name}Icon.css`), cssTemplate({ color, strokeColor }), { createNew: true }),
       Deno.remove(pth)
     ])
     
