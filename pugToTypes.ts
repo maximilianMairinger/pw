@@ -6,6 +6,10 @@ import chokidar from "chokidar"
 import path from "node:path"
 
 
+const options = {
+  watch: Deno.args.includes("--watch")
+}
+
 
 
 const htmlInterfaceString = `
@@ -194,18 +198,51 @@ const svgMap = parseInterface(svgInterfaceString);
 
 
 
-
-
-
 const rootPath = "app/_component"
 
 
-const componentWatcher = chokidar.watch(rootPath, { ignoreInitial: false })
-componentWatcher
-  .on("add", (path: string) => updateComponentIndex(path, "add"))
-  .on("unlink", (path: string) => updateComponentIndex(path, "remove"))
 
-export async function updateComponentIndex(dir: string, kind: "add" | "remove") {
+
+if (options.watch) {
+  chokidar.watch(rootPath, { ignoreInitial: false }).on("add", (path: string) => updateComponentIndex(path, "add"))
+  chokidar.watch(rootPath, { ignoreInitial: true }).on("unlink", (path: string) => updateComponentIndex(path, "remove"))
+
+
+  // after initial
+  setTimeout(() => {
+    chokidar.watch(rootPath, { ignoreInitial: false }).on("add", (path: string) => handlePugUpdate(path, "add"))
+    chokidar.watch(rootPath, { ignoreInitial: true }).on("change", (path: string) => handlePugUpdate(path, "change"))
+  }, 500)
+}
+else {
+  readDirRecursiveOnce(rootPath, (path: string) => {
+    const kind = "add"
+    updateComponentIndex(path, kind)
+    handlePugUpdate(path, kind)
+  })
+}
+
+
+async function readDirRecursiveOnce(dir: string, func: (path: string) => void) {
+  const files = Deno.readDir(dir)
+  const subDirs = []
+  for await (const file of files) {
+    if (file.isDirectory) {
+      subDirs.push(file.name)
+    }
+    else if (file.isFile) {
+      func(path.join(dir, file.name))
+    }
+  }
+
+  for (const subDir of subDirs) {
+    await readDirRecursiveOnce(path.join(dir, subDir), func)
+  }
+}
+
+
+
+async function updateComponentIndex(dir: string, kind: "add" | "remove") {
   const name = path.basename(dir) as string
   if (!name.endsWith(".ts")) return
 
@@ -240,11 +277,9 @@ async function pugToTypes(pugFilePath: string) {
 
   for (const el of allElems) {
     const componentTagName = parseComponentTagName(el.tagName.toLowerCase())
-    // console.log(path.basename(pugFilePath), el.tagName.toLowerCase(), componentTagName)
     if (componentTagName !== false) {
       const component = componentIndex.get(componentTagName)
       if (component) {
-        // console.log(path.basename(pugFilePath), componentTagName)
         const componentPath = "./" + removeExtension(path.relative(path.join(pugFilePath, ".."), component.path))
         
         types.imports.set(componentPath, false)
@@ -309,25 +344,16 @@ async function pugToTypes(pugFilePath: string) {
 `
 }
 
-setTimeout(() => {
-  const pugWatcher = chokidar.watch(rootPath, { ignoreInitial: false })
-  pugWatcher
-    .on("add", (path: string) => handlePugUpdate(path, "add"))
-    .on("change", (path: string) => handlePugUpdate(path, "change"))
-  
-  async function handlePugUpdate(dir: string, kind: "add" | "change") {
-    const name = path.basename(dir) as string
-    if (!name.endsWith(".pug")) return
-  
-    const types = await pugToTypes(dir)
-    const typesPath = path.join(path.dirname(dir), name.slice(0, -4) + ".types.ts")
-  
-    await Deno.writeTextFile(typesPath, types)
-  }
-}, 500)
 
+async function handlePugUpdate(dir: string, kind: "add" | "change") {
+  const name = path.basename(dir) as string
+  if (!name.endsWith(".pug")) return
 
+  const types = await pugToTypes(dir)
+  const typesPath = path.join(path.dirname(dir), name.slice(0, -4) + ".types.ts")
 
+  await Deno.writeTextFile(typesPath, types)
+}
 
 
 
