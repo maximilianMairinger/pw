@@ -217,15 +217,20 @@ if (options.watch) {
   }, 500)
 }
 else {
-  readDirRecursiveOnce(rootPath, (path: string) => {
+  readDirRecursiveOnce(rootPath, async (path: string) => {
     const kind = "add"
-    updateComponentIndex(path, kind)
-    handlePugUpdate(path, kind)
+    await Promise.all([
+      updateComponentIndex(path, kind),
+      handlePugUpdate(path, kind)
+    ])
+  }).then(() => {
+    console.log("PugToTypes: Done")
   })
 }
 
 
-async function readDirRecursiveOnce(dir: string, func: (path: string) => void) {
+async function readDirRecursiveOnce(dir: string, func: (path: string) => (void | Promise<void>)) {
+  const proms = [] as (void | Promise<void>)[]
   const files = Deno.readDir(dir)
   const subDirs = []
   for await (const file of files) {
@@ -233,13 +238,15 @@ async function readDirRecursiveOnce(dir: string, func: (path: string) => void) {
       subDirs.push(file.name)
     }
     else if (file.isFile) {
-      func(path.join(dir, file.name))
+      proms.push(func(path.join(dir, file.name)))
     }
   }
 
   for (const subDir of subDirs) {
-    await readDirRecursiveOnce(path.join(dir, subDir), func)
+    proms.push(readDirRecursiveOnce(path.join(dir, subDir), func))
   }
+
+  await Promise.all(proms)
 }
 
 
