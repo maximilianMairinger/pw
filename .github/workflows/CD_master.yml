@@ -68,6 +68,12 @@ jobs:
       if: ${{ (needs.detectChanges.outputs.app == 'true') || (needs.detectChanges.outputs.dependencies == 'true') }}
       run: npm i
 
+    - name: Setting up deno
+      if: ${{ (needs.detectChanges.outputs.app == 'true') || (needs.detectChanges.outputs.dependencies == 'true') }}
+      uses: denoland/setup-deno@v1
+      with:
+        deno-version: v1.x
+
     # - name: set environment variables
     #   uses: allenevans/set-env@v2.0.0
     #   with:
