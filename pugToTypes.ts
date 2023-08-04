@@ -359,7 +359,7 @@ async function handlePugUpdate(dir: string, kind: "add" | "change") {
   if (!name.endsWith(".pug")) return
 
   const types = await pugToTypes(dir)
-  const typesPath = path.join(path.dirname(dir), name.slice(0, -4) + ".types.ts")
+  const typesPath = path.join(path.dirname(dir), "pugBody.gen.ts")
 
   await Deno.writeTextFile(typesPath, types)
 }

@@ -1,7 +1,7 @@
 import Component from "../component"
 import declareComponent from "../../lib/declareComponent"
 import { Data, DataBase } from "josm"
-import { BodyTypes } from "./notification.types"
+import { BodyTypes } from "./pugBody.gen"; import "./pugBody.gen"
 
 
 const iconImportIndex = {

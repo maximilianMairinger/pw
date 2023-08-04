@@ -75,6 +75,7 @@
     "rollup-plugin-terser": "^7.0.2",
     "style-loader": "^3.3.2",
     "terser-webpack-plugin": "^4.2.0",
+    "tiny-delay": "^1.0.5",
     "to-string-loader": "^1.1.6",
     "ts-loader": "^8.0.14",
     "ts-node": "^9.1.1",
@@ -125,7 +126,6 @@
     "slugify": "^1.6.5",
     "stream-browserify": "^3.0.0",
     "svgo": "^3.0.2",
-    "tiny-delay": "^1.0.5",
     "tippy.js": "^6.3.7"
   },
   "version": "1.0.0"
