@@ -5,7 +5,7 @@ import chokidar from "chokidar"
 import { delay } from "npm:tiny-delay"
 import { LinkedList } from "fast-linked-list"
 
-console.log("Running mkComp")
+console.log("mkComp: Watching...")
 
 async function makeComponent(parentDir: string, name: string) {
   await Deno.mkdir(path.join(parentDir, name), { recursive: true })
