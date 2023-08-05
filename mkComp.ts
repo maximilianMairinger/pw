@@ -41,10 +41,16 @@ export default class ${capitalize(name)} extends ${capitalize(parentCompName)} {
 declareComponent("${paramCase(name)}", ${capitalize(name)})
 `
 
+  const cssContent = 
+`:host {
+
+}
+`
+
   await Promise.all([
     Deno.writeTextFile(path.join(parentDir, name, `${name}.ts`), tsContent),
     Deno.writeTextFile(path.join(parentDir, name, `${name}.pug`), ""),
-    Deno.writeTextFile(path.join(parentDir, name, `${name}.css`), ""),
+    Deno.writeTextFile(path.join(parentDir, name, `${name}.css`), cssContent),
   ])
 
 }
