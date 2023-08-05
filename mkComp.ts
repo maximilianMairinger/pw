@@ -38,7 +38,7 @@ export default class ${capitalize(name)} extends ${capitalize(parentCompName)} {
   }
 }
 
-declareComponent("${paramCase(name)}", ${capitalize(name)})
+declareComponent("c-${paramCase(name)}", ${capitalize(name)})
 `
 
   const cssContent = 
@@ -100,7 +100,7 @@ watcher
               content = content.replace(matchPugAndCssRequireRegex, name)
               content = content.replace(matchClassDeclarationRegex, capitalize(name))
               content = content.replace(matchComponentClassNameRegex, capitalize(name))
-              content = content.replace(matchComponentTagNameRegex, paramCase(name))
+              content = content.replace(matchComponentTagNameRegex, `c-${paramCase(name)}`)
 
               await Promise.all([
                 Deno.writeTextFile(path.join(pth, `${name}.ts`), content),
