@@ -2,6 +2,8 @@ import Component from "../component"
 import declareComponent from "../../lib/declareComponent"
 import { Data, DataBase } from "josm"
 import { BodyTypes } from "./pugBody.gen"; import "./pugBody.gen"
+import Easing from "waapi-easing"
+import delay from "tiny-delay"
 
 
 const iconImportIndex = {
@@ -37,8 +39,8 @@ export default class Notification extends Component {
     })
 
 
-    this.body.header.childs("span").txt(this.headingText)
-    this.body.body.childs("span").txt(this.bodyText)
+    this.body.header.txt(this.headingText)
+    this.body.body.txt(this.bodyText)
 
 
     const setIcon = latestLatentRequest(async (icon: NotificationLevel) => (await iconImportIndex[icon]()).default, (Icon) => {
@@ -53,10 +55,13 @@ export default class Notification extends Component {
 
 
     this.body.button.click(async () => {
-      while(true) {
-        await this.body.container.anim({rotateX: "45deg"}, 1000)
-        await this.body.container.anim({rotateX: "-45deg"}, 1000)
-      }
+      const height = this.height()
+      this.componentBody.anim({rotateX: "-90deg"}, 550)
+      this.componentBody.anim({opacity: 0}, 350)
+      console.log(400 * (height + 150) / 200)
+      delay(50).then(() => this.anim({marginBottom: -height}, {
+        duration: 300 * (height + 150) / 200,
+      })).then(() => this.remove())
     })
 
     
