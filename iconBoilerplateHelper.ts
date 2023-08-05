@@ -98,11 +98,14 @@ async function changeFunc(pth: string, change: boolean) {
       strokeColor = undefined
     }
 
+    const parsedTs = tsTemplate({name})
+    const parsedCss = cssTemplate({ color, strokeColor })
+
     await Deno.mkdir(path.join(iconPath, `${name}Icon`), { recursive: true })
     await Promise.all([
-      Deno.writeTextFile(path.join(iconPath, name, `${name}Icon.pug`), parsedSvg, { createNew: true }),
-      Deno.writeTextFile(path.join(iconPath, name, `${name}Icon.ts`), tsTemplate({name}), { createNew: true }),
-      Deno.writeTextFile(path.join(iconPath, name, `${name}Icon.css`), cssTemplate({ color, strokeColor }), { createNew: true }),
+      Deno.writeTextFile(path.join(iconPath, `${name}Icon`, `${name}Icon.pug`), parsedSvg, { createNew: true }),
+      Deno.writeTextFile(path.join(iconPath, `${name}Icon`, `${name}Icon.ts`), parsedTs, { createNew: true }),
+      Deno.writeTextFile(path.join(iconPath, `${name}Icon`, `${name}Icon.css`), parsedCss, { createNew: true }),
       Deno.remove(pth)
     ])
     
@@ -123,14 +126,14 @@ import declareComponent from "../../../lib/declareComponent";
 
 export default class ${capitalize(name)}Icon extends Icon {
   pug() {
-    return require("./${name}.pug").default
+    return require("./${name}Icon.pug").default
   }
   stl() {
-    return super.stl() + require("./${name}.css").toString()
+    return super.stl() + require("./${name}Icon.css").toString()
   }
 }
 
-declareComponent("${paramCase(name)}-icon", ${capitalize(name)}Icon)
+declareComponent("c-${paramCase(name)}-icon", ${capitalize(name)}Icon)
 `
 
 const cssTemplate = ({color, strokeColor}: {color?: string, strokeColor?: string}) => color !== undefined || strokeColor !== undefined ?
