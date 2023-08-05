@@ -36,6 +36,7 @@ export default class Site extends Component {
     n.log("Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum?")
     n.success("Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum?")
     n.error("Lorem ipsum dolor sitttttt amet consectetur adipisicing elit. Quisquam, voluptatum?")
+    n.error("test", "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum?")
     
 
     

@@ -37,8 +37,8 @@ export default class Notification extends Component {
     })
 
 
-    this.body.header.txt(this.headingText)
-    this.body.body.txt(this.bodyText)
+    this.body.header.childs("span").txt(this.headingText)
+    this.body.body.childs("span").txt(this.bodyText)
 
 
     const setIcon = latestLatentRequest(async (icon: NotificationLevel) => (await iconImportIndex[icon]()).default, (Icon) => {
@@ -49,6 +49,14 @@ export default class Notification extends Component {
     this.level.get((level) => {
       this.componentBody.setAttribute("level", level)
       setIcon(level)
+    })
+
+
+    this.body.button.click(async () => {
+      while(true) {
+        await this.body.container.anim({rotateX: "45deg"}, 1000)
+        await this.body.container.anim({rotateX: "-45deg"}, 1000)
+      }
     })
 
     

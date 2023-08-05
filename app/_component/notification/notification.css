@@ -1,15 +1,20 @@
 :host {
   display: block;
+  --pop-3d: 8px;
 } 
 
 component-body {
   height: max-content;
   position: relative;
+  perspective: 500px;
+}
+
+container-3d {
+  width: 100%;
+  height: max-content;
   display: flex;
   flex-direction: row;
-  box-sizing: border-box;
-  overflow: hidden;
-  border-radius: 15px;
+  transform-style: preserve-3d;
 }
 
 side-bar {
@@ -18,6 +23,8 @@ side-bar {
   display: block;
   /* border-right: 1px solid black; */
   box-sizing: border-box;
+  border-radius: 15px 0 0 15px;
+  transform-style: preserve-3d;
 }
 
 icon-body {
@@ -25,6 +32,7 @@ icon-body {
   width: 100%;
   aspect-ratio: 1/1;
   position: relative;
+  transform: translateX(1.8px) translateZ(var(--pop-3d));
 }
 
 icon-body > * {
@@ -40,10 +48,11 @@ main-content {
   position: relative;
   display: flex;
   flex-direction: column;
+  transform-style: preserve-3d;
 }
 
 header-text {
-  font-size: 1.2em;
+  font-size: 1.1em;
   font-weight: bold;
   padding: 10px;
   padding-right: 15px;
@@ -54,6 +63,16 @@ header-text {
   min-height: 50px;
   display: flex;
   align-items: center;
+  border-radius: 0 15px 0 0;
+  transform-style: preserve-3d;
+}
+
+header-text > span {
+  transform: translateZ(var(--pop-3d));
+}
+
+component-body.onlyOneText header-text {
+  border-radius: 0 15px 15px 0;
 }
 
 x-icon-container {
@@ -63,6 +82,7 @@ x-icon-container {
   right: 0;
   width: 50px;
   height: 50px;
+  transform: translateZ(var(--pop-3d));
 }
 x-icon-container > c-ripple-button {
   width: max-content;
@@ -92,6 +112,8 @@ component-body.onlyOneText header-text {
   padding-right: 40px;
 }
 
+
+
 component-body.onlyOneText body-text, component-body.onlyOneText spacer-line {
   display: none;
 }
@@ -105,6 +127,16 @@ body-text {
   height: max-content;
   position: relative;
   display: block;
+  border-radius: 0 0 15px 0;
+  transform-style: preserve-3d;
+}
+
+span {
+  display: inline-block
+}
+
+body-text > span {
+  transform: translateZ(var(--pop-3d));
 }
 
 spacer-line {
