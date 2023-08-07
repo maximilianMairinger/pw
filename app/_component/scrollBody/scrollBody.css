@@ -1,0 +1,147 @@
+:host {
+  display: block;
+}
+
+overflowing-container {
+  display: inline-block;
+  position: relative;
+}
+
+slot {
+  display: block;
+}
+
+:host([x]) {
+  width: 100%;
+}
+
+:host([y]) {
+  height: 100%;
+}
+
+:host([x]:not([y])) {
+  overflow-y: hidden;
+}
+
+:host([y]:not([x])) {
+  overflow-x: hidden;
+}
+
+:host([x]:not([bar])) {
+  overflow-x: scroll;
+}
+
+:host([y]:not([bar])) {
+  overflow-y: scroll;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+:host(:not([bar]))::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge add Firefox */
+:host(:not([bar])) {
+  -ms-overflow-style: none;
+  scrollbar-width: none; /* Firefox */
+}
+
+:host([x][bar]) {
+  overflow-x: auto;
+}
+
+:host([y][bar]) {
+  overflow-y: auto;
+}
+
+:host {
+  --fade: none;
+  --fade-x: var(--fade);
+  --fade-right: var(--fade-x);
+  --fade-left: var(--fade-x);
+  --fade-y: var(--fade);
+  --fade-top: var(--fade-y);
+  --fade-bottom: var(--fade-y);
+
+  --fade-rgb: 255, 255, 255;
+  --fade-size: 2.5%;
+}
+
+:host([x]) {
+  --fade-x: block;
+}
+
+:host([y]) {
+  --fade-y: block;
+}
+
+scroll-fade.right {
+  display: var(--fade-right);
+  background: linear-gradient(to right, rgba(var(--fade-rgb), 0), rgba(var(--fade-rgb), 1));
+  right: 0;
+}
+
+scroll-fade.left {
+  display: var(--fade-left);
+  background: linear-gradient(to left, rgba(var(--fade-rgb), 0), rgba(var(--fade-rgb), 1));
+  left: 0;
+}
+
+scroll-fade.top {
+  display: var(--fade-top);
+  background: linear-gradient(to top, rgba(var(--fade-rgb), 0), rgba(var(--fade-rgb), 1));
+  top: 0;
+}
+
+scroll-fade.bot {
+  display: var(--fade-bottom);
+  background: linear-gradient(to bottom, rgba(var(--fade-rgb), 0), rgba(var(--fade-rgb), 1));
+  bottom: 0;
+}
+
+scroll-fade {
+  position: absolute;
+  pointer-events: none;
+}
+
+
+scroll-fade.x {
+  top: 0;
+  bottom: 0;
+  width: var(--fade-size);
+}
+
+scroll-fade.y {
+  left: 0;
+  right: 0;
+  height: var(--fade-size);
+}
+
+
+
+
+:host {
+  --hint-background-color: white;
+  --hint-content-color: black;
+}
+
+.hint {
+  display: none;
+  border-radius: 50%;
+  position: absolute;
+  --background-color: var(--hint-background-color);
+  box-shadow: 0 0 5px 5px rgba(0, 0, 0, .05);
+}
+
+scroll-hint > c-chevron-icon {
+  --color: var(--hint-content-color);
+}
+
+:host([x]:not([no-hint])) scroll-hint.x {
+  display: block;
+}
+
+:host([y][hint]) scroll-hint.y {
+  display: block;
+}
+
