@@ -56,7 +56,7 @@ export default class Notification extends Component {
 
     this.body.button.click(async () => {
       const height = this.height()
-      this.componentBody.anim({rotateX: "-90deg"}, 550)
+      this.componentBody.anim({rotateX: "-90deg", scale: .5}, 550)
       this.componentBody.anim({opacity: 0}, 350)
       console.log(400 * (height + 150) / 200)
       delay(50).then(() => this.anim({marginBottom: -height}, {
