@@ -1,5 +1,5 @@
 import liveReloadServer from "./liveReloadServer"
-import delay from "delay"
+import delay from "tiny-delay"
 
 
 (async () => {

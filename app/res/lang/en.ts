@@ -6,4 +6,5 @@ export default {
   links: [],
   confirm: "Confirm",
   copiedFeedback: "Copied!",
+  closeAll: "Close all",
 }

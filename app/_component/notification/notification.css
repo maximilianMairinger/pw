@@ -11,6 +11,7 @@ component-body {
   box-sizing: border-box;
   overflow: hidden;
   border-radius: 15px;
+  opacity: 0;
 }
 
 side-bar {
@@ -95,12 +96,43 @@ c-x-icon:hover {
   --color: rgba(0, 0, 0, .9);
 }
 
+close-all-container {
+  position: absolute;
+  top: 0;
+  right: 50px;
+  height: 50px;
+  display: flex;
+  opacity: 0;
+  display: none;
+}
+
+close-all-container > c-ripple-button {
+  color: inherit;
+  margin: auto;
+  --cover-color: rgba(0, 0, 0, 0.07);
+  border-radius: 8px;
+}
+
+close-all-container span {
+  padding: 8px;
+}
+
+
+
+
+
+
 component-body.onlyOneText header-text {
   font-weight: normal;
   font-size: 1em;
   padding-top: 13px;
   padding-bottom: 13px;
   padding-right: 40px;
+}
+
+
+component-body.showCloseAllButton header-text {
+  padding-right: 130px;
 }
 
 

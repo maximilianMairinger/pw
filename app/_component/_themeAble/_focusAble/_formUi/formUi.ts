@@ -1,4 +1,4 @@
-import delay from "delay";
+import delay from "tiny-delay";
 import { ElementList, EventListener } from "extended-dom";
 import { Data, DataBase } from "josm";
 import declareComponent from "../../../../lib/declareComponent";

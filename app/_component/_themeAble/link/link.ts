@@ -2,7 +2,7 @@ import declareComponent from "../../../lib/declareComponent"
 import ThemeAble, { Theme } from "../themeAble";
 import { Data, DataCollection, DataSubscription } from "josm"
 import * as domain from "../../../lib/domain"
-import delay from "delay"
+import delay from "tiny-delay"
 // import ExternalLinkIcon from "../_icon/externalLink/externalLink"
 import { Prim, EventListener } from "extended-dom";
 

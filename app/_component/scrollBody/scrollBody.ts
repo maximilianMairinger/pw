@@ -35,6 +35,7 @@ export default class ScrollBody extends Component<false> {
     })
 
 
+
     
     atEnd((_, diff) => {
       for (const dir in diff) {
@@ -51,7 +52,12 @@ export default class ScrollBody extends Component<false> {
     }
 
 
+
+
+
     const margin = 5
+
+    
 
     for (const { dir, len } of [{dir: "y", len: "height"}, {dir: "x", len: "width"}] as const) {
       for (const { end } of [{end: false}, {end: true}] as const) {
@@ -68,8 +74,11 @@ export default class ScrollBody extends Component<false> {
           }
           
           this.scrollEnabled[dir].get((enabled) => {
-            if (enabled) scrollTrigger().on(wards, func)
-            else scrollTrigger().off(wards, func)
+            // This timeout is a quickfix. Currently subscribing to another data inside a data.get callback will cause the callback cause the inner callback to not actually subscribe, but instead only work once. We have such a situation here, as the scrollTrigger memoisation calls the tunnel function which subscribes.
+            setTimeout(() => {
+              if (enabled) scrollTrigger().on(wards, func)
+              else scrollTrigger().off(wards, func)
+            })
           }, this.scrollEnabled[dir].get())
         }
       }

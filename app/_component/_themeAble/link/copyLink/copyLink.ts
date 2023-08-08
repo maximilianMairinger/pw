@@ -1,7 +1,7 @@
 import declareComponent from "../../../../lib/declareComponent"
 import Link from "../link";
 import copyToClipboard from "copy-to-clipboard"
-import delay from "delay"
+import delay from "tiny-delay"
 import lang from "../../../../lib/lang";
 import { loadRecord } from "../../_frame/frame";
 

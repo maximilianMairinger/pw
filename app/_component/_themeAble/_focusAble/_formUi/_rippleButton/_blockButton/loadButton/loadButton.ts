@@ -1,5 +1,5 @@
 import BlockButton from "../blockButton";
-import delay from "delay";
+import delay from "tiny-delay";
 import declareComponent from "../../../../../../../lib/declareComponent";
 import Easing from "waapi-easing";
 import CheckIcon from "./../../../../../../_icon/checkIcon/checkIcon"

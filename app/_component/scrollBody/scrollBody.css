@@ -19,12 +19,13 @@ slot {
   height: 100%;
 }
 
+/* this doesnt work... I think this some weird, but spec compliant behavior */
 :host([x]:not([y])) {
-  overflow-y: hidden;
+  overflow-y: visible;
 }
 
 :host([y]:not([x])) {
-  overflow-x: hidden;
+  overflow-x: visible;
 }
 
 :host([x]:not([bar])) {
@@ -102,6 +103,7 @@ scroll-fade.bot {
 scroll-fade {
   position: absolute;
   pointer-events: none;
+  opacity: 0;
 }
 
 
