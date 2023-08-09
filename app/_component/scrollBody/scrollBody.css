@@ -5,6 +5,15 @@
 overflowing-container {
   display: inline-block;
   position: relative;
+  pointer-events: all;
+}
+
+:host([y]) ::slotted(*), :host([y]) overflowing-container {
+  width: 100%;
+}
+
+:host([x]) ::slotted(*), :host([x]) overflowing-container {
+  height: 100%;
 }
 
 slot {
@@ -17,6 +26,44 @@ slot {
 
 :host([y]) {
   height: 100%;
+}
+
+:host {
+  --margin-edge: 5%;
+  --margin-edge-x: var(--margin-edge);
+  --margin-edge-right: var(--margin-edge-x);
+  --margin-edge-left: var(--margin-edge-x);
+  --margin-edge-y: var(--margin-edge);
+  --margin-edge-top: var(--margin-edge-y);
+  --margin-edge-bottom: var(--margin-edge-y);
+
+  --margin: 10px;
+  --margin-x: var(--margin);
+  --margin-y: var(--margin);
+}
+
+:host([y]) ::slotted(*)  {
+  margin-bottom: var(--margin-y);
+}
+
+:host([x]) ::slotted(*)  {
+  margin-right: var(--margin-x);
+}
+
+:host([y]) ::slotted(*:first-child)  {
+  margin-top: var(--margin-edge-top);
+}
+
+:host([y]) ::slotted(*:last-child)  {
+  margin-bottom: var(--margin-edge-bottom);
+}
+
+:host([x]) ::slotted(*:first-child)  {
+  margin-left: var(--margin-edge-left);
+}
+
+:host([x]) ::slotted(*:last-child)  {
+  margin-right: var(--margin-edge-right);
 }
 
 /* this doesnt work... I think this some weird, but spec compliant behavior */

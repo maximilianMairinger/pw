@@ -1,6 +1,6 @@
 import Component from "../component"
 import declareComponent from "../../lib/declareComponent"
-import { Data, DataBase } from "josm"
+import { Data, DataBase, DataCollection } from "josm"
 import { BodyTypes } from "./pugBody.gen"; import "./pugBody.gen"
 import Easing from "waapi-easing"
 import delay from "tiny-delay"
@@ -76,6 +76,11 @@ export default class Notification extends Component {
       if (!show) this.body.closeAllBtnContainer.hide()
     }))
 
+
+    new DataCollection(this.body.closeAllBtnContainer.resizeDataBase().width, this.showCloseAllButtonData).get((width, showing) => {
+      this.body.header.css({paddingRight: showing ? width + 10 + 50 : ""})
+    })
+
   }
 
   private closing = false
@@ -83,7 +88,7 @@ export default class Notification extends Component {
     this.closing = true
     if (allAtOnce) {
       this.componentBody.anim({scale: .9, rotateX: "-30deg"}, 550)
-      this.componentBody.anim({opacity: 0}, 350)
+      this.componentBody.anim({opacity: 0}, 350).then(() => this.remove())
     }
     else {
       const height = this.height()
@@ -96,8 +101,7 @@ export default class Notification extends Component {
 
   show() {
     const height = this.height()
-    const marginBot = this.css("marginBottom")
-    this.css({marginBottom: -height}).anim({marginBottom: marginBot}, 300 * (height + 150) / 200)
+    this.css({marginBottom: -height}).anim({marginBottom: 10}, 300 * (height + 150) / 200).then(() => this.css({marginBottom: ""}))
     this.componentBody.anim({opacity: 1}, 350)
     this.componentBody.css({rotateX: "-60deg", scale: .5}).anim({rotateX: "0deg", scale: 1}, 350)
     return this

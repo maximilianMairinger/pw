@@ -31,7 +31,7 @@ export default class Site extends Component {
     this.apd(n)
 
     n.error("test")
-    // n.success("test", "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum?")
+    n.success("test", "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum?")
     // n.log("test", "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum?")
     // n.log("Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum?")
     // n.success("Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum?")

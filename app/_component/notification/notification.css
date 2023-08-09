@@ -115,6 +115,10 @@ close-all-container > c-ripple-button {
 
 close-all-container span {
   padding: 8px;
+  border: 1.5px solid;
+  border-color: rgba(var(--text-color-srb), .4);
+  border-color: color(display-p3 var(--text-color-p3) / .4);
+  border-radius: 8px;
 }
 
 
@@ -132,7 +136,7 @@ component-body.onlyOneText header-text {
 
 
 component-body.showCloseAllButton header-text {
-  padding-right: 130px;
+  padding-right: 140px;
 }
 
 
@@ -183,9 +187,14 @@ component-body[level="error"] spacer-line {
   background: color(display-p3 0.7843 0.5686 0.5373);
 }
 
+
+component-body[level="error"] {
+  --text-color-srb: 122, 18, 1;
+  --text-color-p3:  0.4392 0.1137 0.051;
+}
 component-body[level="error"] main-content {
-  color: rgb(47.968% 7.0067% 0.3517%);
-  color: color(display-p3 0.4392 0.1137 0.051);
+  color: rgb(var(--text-color-srb));
+  color: color(display-p3 var(--text-color-p3));
 }
 
 component-body[level="error"] main-content ::selection {
@@ -223,9 +232,14 @@ component-body[level="success"] spacer-line {
   background: color(display-p3 0.4516 0.7083 0.4591);
 }
 
+
+component-body[level="success"] {
+  --text-color-srb: 23, 70, 39;
+  --text-color-p3:  0.1433 0.2708 0.1645;
+}
 component-body[level="success"] main-content {
-  color: rgb(9.1609% 27.478% 15.315%);
-  color: color(display-p3 0.1433 0.2708 0.1645);
+  color: rgb(var(--text-color-srb));
+  color: color(display-p3 var(--text-color-p3));
 }
 
 component-body[level="success"] main-content ::selection {
@@ -255,15 +269,20 @@ component-body[level="log"] body-text, component-body[level="log"].onlyOneText h
   background: color(display-p3 0.7083 0.8456 1);
 }
 
-
 component-body[level="log"] spacer-line {
   background: rgb(43.021% 64.605% 84.225%);
   background: color(display-p3 0.4778 0.6403 0.825);
 }
 
+
+
+component-body[level="log"] {
+  --text-color-srb: 13, 51, 119;
+  --text-color-p3:  0.0941 0.1961 0.451;
+}
 component-body[level="log"] main-content {
-  color: rgb(5.0862% 19.919% 46.799%);
-  color: color(display-p3 0.0941 0.1961 0.451);
+  color: rgb(var(--text-color-srb));
+  color: color(display-p3 var(--text-color-p3));
 }
 
 component-body[level="log"] main-content ::selection {
