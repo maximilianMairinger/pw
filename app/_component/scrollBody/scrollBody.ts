@@ -1,5 +1,5 @@
 import { memoize } from "key-index"
-import { Data, DataBase } from "josm";
+import { Data, DataBase, DataCollection, ReadonlyData } from "josm";
 import declareComponent from "../../lib/declareComponent"
 import Component from "../component"
 import { BodyTypes } from "./pugBody.gen"; import "./pugBody.gen"
@@ -18,6 +18,11 @@ export default class ScrollBody extends Component<false> {
     y: new Data(false)
   }
 
+  public isScrollAble: {
+    x: ReadonlyData<boolean>,
+    y: ReadonlyData<boolean>
+  }
+
 
   constructor() {
     super(false)
@@ -25,6 +30,15 @@ export default class ScrollBody extends Component<false> {
 
   connectedCallback() {
     const scrollLength = this.body.overflow.resizeDataBase()
+    const containerLen = this.resizeDataBase()
+
+
+    for (const dir of ["x", "y"] as const) {
+      const lenVerb = dirToLenIndex[dir]
+      containerLen[lenVerb].get((len) => {
+        this.css(`--gen-1-percent-of-${lenVerb}` as any, `${len * .01}px`)
+      })
+    }
 
     
     const atEnd = new DataBase({
@@ -39,7 +53,7 @@ export default class ScrollBody extends Component<false> {
     
     atEnd((_, diff) => {
       for (const dir in diff) {
-        this.q(`scroll-fade.${dir}`).anim({opacity: diff[dir] ? 0 : 1})
+        this[diff[dir] ? "addClass" : "removeClass"](`at${capitalize(dir)}End`)
       }
     })
 
@@ -83,6 +97,23 @@ export default class ScrollBody extends Component<false> {
         }
       }
     }
+
+
+    this.isScrollAble = {} as any
+    for (const dir of ["x", "y"] as const) {
+      const scrollAble = this.isScrollAble[dir] = new Data(false)
+      new DataCollection(this.scrollEnabled[dir], scrollLength[dirToLenIndex[dir]], containerLen[dirToLenIndex[dir]]).get((enabled, scrollLength, containerLen) => {
+        if (enabled) scrollAble.set(scrollLength > containerLen)
+        else scrollAble.set(false)
+      })
+
+      scrollAble.get((scrollAble) => {
+        this[scrollAble ? "addClass" : "removeClass"](`scrollAble${dir.toUpperCase()}`)
+      })
+    }
+
+
+
   }
   x(x: string) {
     this.scrollEnabled.x.set(x !== null)
@@ -103,5 +134,12 @@ declareComponent("c-scroll-body", ScrollBody)
 
 
 
+const dirToLenIndex = {
+  x: "width",
+  y: "height"
+} as const
 
 
+function capitalize(s: string) {
+  return s[0].toUpperCase() + s.slice(1)
+}

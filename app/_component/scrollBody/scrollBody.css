@@ -29,11 +29,12 @@ slot {
 }
 
 :host {
-  --margin-edge: 5%;
-  --margin-edge-x: var(--margin-edge);
+  --margin-edge-x: calc(var(--gen-1-percent-of-width) * 2.5);
+  /* --margin-edge-x: var(--margin-edge); */
   --margin-edge-right: var(--margin-edge-x);
   --margin-edge-left: var(--margin-edge-x);
-  --margin-edge-y: var(--margin-edge);
+  --margin-edge-y: calc(var(--gen-1-percent-of-height) * 2.5);
+  /* --margin-edge-y: var(--margin-edge); */
   --margin-edge-top: var(--margin-edge-y);
   --margin-edge-bottom: var(--margin-edge-y);
 
@@ -123,6 +124,12 @@ slot {
   --fade-y: block;
 }
 
+scroll-fade {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0;
+}
+
 scroll-fade.right {
   display: var(--fade-right);
   background: linear-gradient(to right, rgba(var(--fade-rgb), 0), rgba(var(--fade-rgb), 1));
@@ -145,12 +152,23 @@ scroll-fade.bot {
   display: var(--fade-bottom);
   background: linear-gradient(to bottom, rgba(var(--fade-rgb), 0), rgba(var(--fade-rgb), 1));
   bottom: 0;
+  transition: opacity 0.3s;
 }
 
-scroll-fade {
-  position: absolute;
-  pointer-events: none;
-  opacity: 0;
+:host(.atTopEnd) scroll-fade.top {
+  opacity: 1;
+}
+
+:host(.atBottomEnd) scroll-fade.bot {
+  opacity: 1;
+}
+
+:host(.atLeftEnd) scroll-fade.left {
+  opacity: 1;
+}
+
+:host(.atRightEnd) scroll-fade.right {
+  opacity: 1;
 }
 
 
@@ -172,25 +190,83 @@ scroll-fade.y {
 :host {
   --hint-background-color: white;
   --hint-content-color: black;
+
+  --hint-margin-x: calc(var(--gen-1-percent-of-width) * 4);
+  --hint-margin-left: var(--hint-margin-x);
+  --hint-margin-right: var(--hint-margin-x);
+  --hint-margin-y: calc(var(--gen-1-percent-of-height) * 4);
+  --hint-margin-top: var(--hint-margin-y);
+  --hint-margin-bottom: var(--hint-margin-y);
 }
 
 .hint {
-  display: none;
+  display: block;
+  opacity: 0;
   border-radius: 50%;
   position: absolute;
-  --background-color: var(--hint-background-color);
+  transition: .3s;
+}
+
+.hint.top {
+  top: var(--hint-margin-top);
+  left: calc(50% - 52px / 2);
+  transform: translateY(-6px);
+}
+
+.hint.bot {
+  bottom: var(--hint-margin-bottom);
+  left: calc(50% - 52px / 2);
+  transform: translateY(6px);
+}
+
+.hint.left {
+  left: var(--hint-margin-left);
+  top: calc(50% - 52px / 2);
+  transform: translateX(-6px);
+}
+
+.hint.right {
+  right: var(--hint-margin-right);
+  top: calc(50% - 52px / 2);
+  transform: translateX(6px);
+}
+
+.hint chevron-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--hint-background-color);
   box-shadow: 0 0 5px 5px rgba(0, 0, 0, .05);
+  border-radius: 50%;
+  width: 52px;
+  height: 52px;
 }
 
-scroll-hint > c-chevron-icon {
+
+.hint c-chevron-icon {
   --color: var(--hint-content-color);
+  width: 24px;
+  height: 24px
 }
 
-:host([x]:not([no-hint])) scroll-hint.x {
-  display: block;
+.hint.top c-chevron-icon {
+  transform: rotate(270deg) translateX(2px);
 }
 
-:host([y][hint]) scroll-hint.y {
-  display: block;
+.hint.bot c-chevron-icon {
+  transform: rotate(90deg) translateX(2px);
+}
+
+.hint.right c-chevron-icon {
+  transform: rotate(180deg) translateX(2px);
+}
+
+:host(:not([no-hint]).scrollAbleY:not(.atTopEnd)) .hint.top, 
+:host(:not([no-hint]).scrollAbleY:not(.atBotEnd)) .hint.bot, 
+:host([hint].scrollAbleX:not(.atLeftEnd)) .hint.left, 
+:host([hint].scrollAbleX:not(.atRightEnd)) .hint.right {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: all;
 }
 
