@@ -5,6 +5,7 @@
   border-radius: 20px;
   text-align: left;
   --cover-color: rgba(0, 0, 0, .04);
+  --cover-z-index: 20;
 }
 
 move-me {
@@ -27,7 +28,6 @@ root-bounds {
   right: 0;
   bottom: 0;
   z-index: 6;
-  /* background-color: yellow; */
 }
 
 
@@ -44,6 +44,7 @@ root-bounds {
     left: 0;
     top: 0;
     display: none;
+    z-index: var(--cover-z-index);
   }
   
   .cover.active {
@@ -108,7 +109,7 @@ button-waves {
   border-radius: inherit;
   top: 0;
   left: 0;
-  z-index: -1;
+  z-index: 2;
 }
 
 button-wave-container {
