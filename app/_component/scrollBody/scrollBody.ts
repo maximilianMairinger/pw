@@ -3,8 +3,8 @@ import { Data, DataBase, DataCollection, ReadonlyData } from "josm";
 import declareComponent from "../../lib/declareComponent"
 import Component from "../component"
 import { BodyTypes } from "./pugBody.gen"; import "./pugBody.gen"
-import { ScrollData, ElemScrollData, ScrollTrigger } from "extended-dom";
-import LinkedList from "fast-linked-list";
+import { ElementList } from "extended-dom";
+import RippleButton from "./../_themeAble/_focusAble/_formUi/_rippleButton/rippleButton"
 
 
 
@@ -109,6 +109,19 @@ export default class ScrollBody extends Component<false> {
 
       scrollAble.get((scrollAble) => {
         this[scrollAble ? "addClass" : "removeClass"](`scrollAble${dir.toUpperCase()}`)
+      })
+    }
+
+
+    for (const hint of this.q(".hint", true) as ElementList<RippleButton>) {
+      const side = hint.getAttribute("side") as "top" | "bot" | "left" | "right"
+      const sign = side === "top" || side === "left" ? -1 : 1
+      const dir = hint.getAttribute("dir") as "x" | "y"
+      const diff = sign * 250
+      const currentScrollPos = this.scrollData(false, dir)
+
+      hint.click(() => {
+        this.scroll({[dir]: currentScrollPos.get() + diff} as {x: number} | {y: number}, {speed: 600})
       })
     }
 

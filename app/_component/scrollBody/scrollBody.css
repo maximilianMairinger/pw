@@ -207,25 +207,25 @@ scroll-fade.y {
   transition: .3s;
 }
 
-.hint.top {
+.hint[side="top"] {
   top: var(--hint-margin-top);
   left: calc(50% - 52px / 2);
   transform: translateY(-6px);
 }
 
-.hint.bot {
+.hint[side="bot"] {
   bottom: var(--hint-margin-bottom);
   left: calc(50% - 52px / 2);
   transform: translateY(6px);
 }
 
-.hint.left {
+.hint[side="left"] {
   left: var(--hint-margin-left);
   top: calc(50% - 52px / 2);
   transform: translateX(-6px);
 }
 
-.hint.right {
+.hint[side="right"] {
   right: var(--hint-margin-right);
   top: calc(50% - 52px / 2);
   transform: translateX(6px);
@@ -249,22 +249,22 @@ scroll-fade.y {
   height: 24px
 }
 
-.hint.top c-chevron-icon {
+.hint[side="top"] c-chevron-icon {
   transform: rotate(270deg) translateX(2px);
 }
 
-.hint.bot c-chevron-icon {
+.hint[side="bot"] c-chevron-icon {
   transform: rotate(90deg) translateX(2px);
 }
 
-.hint.right c-chevron-icon {
+.hint[side="right"] c-chevron-icon {
   transform: rotate(180deg) translateX(2px);
 }
 
-:host(:not([no-hint]).scrollAbleY:not(.atTopEnd)) .hint.top, 
-:host(:not([no-hint]).scrollAbleY:not(.atBotEnd)) .hint.bot, 
-:host([hint].scrollAbleX:not(.atLeftEnd)) .hint.left, 
-:host([hint].scrollAbleX:not(.atRightEnd)) .hint.right {
+:host(:not([no-hint]).scrollAbleY:not(.atTopEnd)) .hint[side="top"], 
+:host(:not([no-hint]).scrollAbleY:not(.atBotEnd)) .hint[side="bot"], 
+:host([hint].scrollAbleX:not(.atLeftEnd)) .hint[side="left"], 
+:host([hint].scrollAbleX:not(.atRightEnd)) .hint[side="right"] {
   opacity: 1;
   transform: translateY(0);
   pointer-events: all;
