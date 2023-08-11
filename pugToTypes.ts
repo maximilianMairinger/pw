@@ -209,33 +209,33 @@ const componentIndex = new Map<string, {
 
 
 
+const kind = "add"
+const paths = []
+await readDirRecursiveOnce(rootPath, (path: string) => {
+  updateComponentIndex(path, kind)
+  paths.push(path)
+})
+
+const proms = []
+for (const path of paths) {
+  proms.push(handlePugUpdate(path, kind))
+}
+await Promise.all(proms)
+console.log("PugToTypes: Done")
+
+
 if (options.watch) {
   console.log("PugToTypes: Watching...")
 
-  chokidar.watch(rootPath, { ignoreInitial: false }).on("add", (path: string) => updateComponentIndex(path, "add"))
+  chokidar.watch(rootPath, { ignoreInitial: true }).on("add", (path: string) => updateComponentIndex(path, "add"))
   chokidar.watch(rootPath, { ignoreInitial: true }).on("unlink", (path: string) => updateComponentIndex(path, "remove"))
 
 
   // after initial
   setTimeout(() => {
-    chokidar.watch(rootPath, { ignoreInitial: false }).on("add", (path: string) => handlePugUpdate(path, "add"))
+    chokidar.watch(rootPath, { ignoreInitial: true }).on("add", (path: string) => handlePugUpdate(path, "add"))
     chokidar.watch(rootPath, { ignoreInitial: true }).on("change", (path: string) => handlePugUpdate(path, "change"))
   }, 500)
-}
-else {
-  const kind = "add"
-  const paths = []
-  await readDirRecursiveOnce(rootPath, (path: string) => {
-    updateComponentIndex(path, kind)
-    paths.push(path)
-  })
-
-  const proms = []
-  for (const path of paths) {
-    proms.push(handlePugUpdate(path, kind))
-  }
-  await Promise.all(proms)
-  console.log("PugToTypes: Done")
 }
 
 
