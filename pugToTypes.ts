@@ -203,6 +203,12 @@ const rootPath = "app/_component"
 
 
 
+const componentIndex = new Map<string, {
+  path: string
+}>()
+
+
+
 if (options.watch) {
   console.log("PugToTypes: Watching...")
 
@@ -217,15 +223,19 @@ if (options.watch) {
   }, 500)
 }
 else {
-  readDirRecursiveOnce(rootPath, async (path: string) => {
-    const kind = "add"
-    await Promise.all([
-      updateComponentIndex(path, kind),
-      handlePugUpdate(path, kind)
-    ])
-  }).then(() => {
-    console.log("PugToTypes: Done")
+  const kind = "add"
+  const paths = []
+  await readDirRecursiveOnce(rootPath, (path: string) => {
+    updateComponentIndex(path, kind)
+    paths.push(path)
   })
+
+  const proms = []
+  for (const path of paths) {
+    proms.push(handlePugUpdate(path, kind))
+  }
+  await Promise.all(proms)
+  console.log("PugToTypes: Done")
 }
 
 
@@ -251,7 +261,7 @@ async function readDirRecursiveOnce(dir: string, func: (path: string) => (void |
 
 
 
-async function updateComponentIndex(dir: string, kind: "add" | "remove") {
+function updateComponentIndex(dir: string, kind: "add" | "remove") {
   const name = path.basename(dir) as string
   if (!name.endsWith(".ts")) return
 
@@ -263,9 +273,7 @@ async function updateComponentIndex(dir: string, kind: "add" | "remove") {
   }
 }
 
-const componentIndex = new Map<string, {
-  path: string
-}>()
+
 
 
 
