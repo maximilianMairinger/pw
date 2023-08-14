@@ -85,28 +85,3 @@ export default abstract class Component<T extends HTMLElement | HTMLAnchorElemen
 
 }
 
-
-
-/*
-import Component from "../component"
-import declareComponent from "../../../lib/declareComponent"
-
-export default class Example extends Component {
-
-  constructor() {
-    super()
-
-
-  }
-
-  stl() {
-    return require("./example.css").toString()
-  }
-  pug() {
-    return require("./example.pug").default
-  }
-}
-
-declareComponent("example", Example)
-
-*/
