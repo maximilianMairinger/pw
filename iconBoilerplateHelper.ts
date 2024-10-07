@@ -1,10 +1,11 @@
-// deno-lint-ignore-file 
 import chokidar from "chokidar"
 import { outlineSvg as _outlineSvg } from '@davestewart/outliner'
 import path from "node:path"
 import svgo, { Config } from "svgo"
 import { paramCase } from "change-case"
 import { load as cheerioHTML, Element } from "cheerio"
+import {promises as fs} from "fs"
+declare const Bun: any
 
 type outlineSvg = (content: string) => string
 const outlineSvg = _outlineSvg as outlineSvg
@@ -16,31 +17,32 @@ chokidar.watch(iconPath, { ignoreInitial: true }).on("add", (path: string) => ch
 
 console.log("Running iconBoilerplateHelper")
 
-function unifyColorIfPossible($: ReturnType<typeof cheerioHTML>, attrb: "stroke" | "fill"): ColorProps {
-  const allElems = [...$(`[${attrb}]`)].filter((el) => !notReallyColors.includes(el.attribs[attrb].toLowerCase()))
+function unifyAttrbIfPossible($: ReturnType<typeof cheerioHTML>, attrbName: string): UnifyAttrbProps {
+  const allElems = [...$(`[${attrbName}]`)].filter((el: any) => !notReallyColors.includes(el.attribs[attrbName].toLowerCase())) as Element[]
 
   const nonEmpty = allElems.length > 0
 
-  const colors = new Set()
+  const attrb = new Set()
   allElems.forEach((el) => {
-    colors.add(el.attribs[attrb])
+    attrb.add(el.attribs[attrbName])
   })
-  const onlyOneColor = colors.size === 1
+  const onlyOneAttrb = attrb.size === 1
 
   
   return {
     allElems,
     nonEmpty,
-    colors, 
-    onlyOneColor
+    attrb, 
+    onlyOneAttrb
   }
 }
 
 
+
 async function changeFunc(pth: string, change: boolean) {
-  const stat = await Deno.stat(pth)
-  if (stat.isFile) {
-    const content = await Deno.readTextFile(pth)
+  const stat = await fs.stat(pth)
+  if (stat.isFile()) {
+    const content = await fs.readFile(pth, "utf8")
     if (content === "") return
     if (!pth.endsWith(".svg")) return
   
@@ -60,7 +62,7 @@ async function changeFunc(pth: string, change: boolean) {
 
     if (await fileExists(path.join(iconPath, name))) {
       console.log(`A svg under the name ${name} already exists. Skipping`)
-      Deno.remove(pth)
+      await fs.unlink(pth)
       return
     }
 
@@ -71,18 +73,69 @@ async function changeFunc(pth: string, change: boolean) {
 
 
 
-    const $ = cheerioHTML(content)
 
-    const colorProps = {
-      fill: unifyColorIfPossible($, "fill"),
-      stroke: unifyColorIfPossible($, "stroke")
-    }
-    
+    let colorProps: {
+      fill: UnifyAttrbProps,
+      stroke: UnifyAttrbProps
+    } = {} as any
+
+    let strokeWidthProps: UnifyAttrbProps = {} as any
     
     type Input = string
     type Output = string
     const decorators = [
-      parseSvgDecorators.colorify(),
+      parseSvgDecorators.minimize({ assumeWithoutStroke: false, pretty: true }),
+      (content) => {
+        const $ = cheerioHTML(content)
+
+
+        const fill = unifyAttrbIfPossible($, "fill")
+        const stroke = unifyAttrbIfPossible($, "stroke")
+
+        colorProps = {
+          fill,
+          stroke
+        }
+
+
+        if (fill.nonEmpty && !stroke.nonEmpty) {
+          if (fill.onlyOneAttrb) {
+            fill.allElems.forEach((el) => {
+              $(el).attr("fill", "var(--color)")
+            })
+          }
+        }
+        if (stroke.nonEmpty && !fill.nonEmpty) {
+          if (stroke.onlyOneAttrb) {
+            stroke.allElems.forEach((el) => {
+              $(el).attr("stroke", "var(--color)")
+            })
+          }
+        }
+        if (stroke.nonEmpty && fill.nonEmpty) {
+          if (fill.onlyOneAttrb) {
+            fill.allElems.forEach((el) => {
+              $(el).attr("fill", "var(--color)")
+            })
+          }
+          if (stroke.onlyOneAttrb) {
+            stroke.allElems.forEach((el) => {
+              $(el).attr("stroke", "var(--stroke-color)")
+            })
+          }
+        }
+        return $("body").html()
+      },
+      () => {
+        const $ = cheerioHTML(content)
+        strokeWidthProps = unifyAttrbIfPossible($, "stroke-width")
+        if (strokeWidthProps.nonEmpty && strokeWidthProps.onlyOneAttrb) {
+          strokeWidthProps.allElems.forEach((el) => {
+            $(el).attr("stroke-width", "var(--stroke-width)")
+          })
+        }
+        return $("body").html()
+      },
       parseSvgDecorators.minimize({ assumeWithoutStroke: false, pretty: true }),
     ] as ((content: Input) => Output)[]
 
@@ -91,22 +144,22 @@ async function changeFunc(pth: string, change: boolean) {
 
     const parsedSvg = decorators.reduce((acc, decorator) => decorator(acc), content)
 
-    let color = colorProps.fill.onlyOneColor ? colorProps.fill.colors.values().next().value : undefined
-    let strokeColor = colorProps.stroke.onlyOneColor ? colorProps.stroke.colors.values().next().value : undefined
-    if (color === undefined && strokeColor !== undefined) {
+    let color = colorProps.fill.onlyOneAttrb ? colorProps.fill.attrb.values().next().value : undefined
+    let strokeColor = colorProps.stroke.onlyOneAttrb ? colorProps.stroke.attrb.values().next().value : undefined
+    if (color === undefined && strokeColor !== undefined && !colorProps.fill.nonEmpty) {
       color = strokeColor
       strokeColor = undefined
     }
 
     const parsedTs = tsTemplate({name})
-    const parsedCss = cssTemplate({ color, strokeColor })
+    const parsedCss = cssTemplate({ color, strokeColor, strokeWidth: strokeWidthProps.onlyOneAttrb ? strokeWidthProps.attrb.values().next().value : undefined })
 
-    await Deno.mkdir(path.join(iconPath, `${name}Icon`), { recursive: true })
+    await fs.mkdir(path.join(iconPath, `${name}Icon`), { recursive: true })
     await Promise.all([
-      Deno.writeTextFile(path.join(iconPath, `${name}Icon`, `${name}Icon.pug`), parsedSvg, { createNew: true }),
-      Deno.writeTextFile(path.join(iconPath, `${name}Icon`, `${name}Icon.ts`), parsedTs, { createNew: true }),
-      Deno.writeTextFile(path.join(iconPath, `${name}Icon`, `${name}Icon.css`), parsedCss, { createNew: true }),
-      Deno.remove(pth)
+      fs.writeFile(path.join(iconPath, `${name}Icon`, `${name}Icon.pug`), parsedSvg),
+      fs.writeFile(path.join(iconPath, `${name}Icon`, `${name}Icon.ts`), parsedTs),
+      fs.writeFile(path.join(iconPath, `${name}Icon`, `${name}Icon.css`), parsedCss),
+      fs.unlink(pth)
     ])
     
     
@@ -136,10 +189,11 @@ export default class ${capitalize(name)}Icon extends Icon {
 declareComponent("c-${paramCase(name)}-icon", ${capitalize(name)}Icon)
 `
 
-const cssTemplate = ({color, strokeColor}: {color?: string, strokeColor?: string}) => color !== undefined || strokeColor !== undefined ?
+const cssTemplate = ({color, strokeColor, strokeWidth}: {color?: string, strokeColor?: string, strokeWidth?: boolean}) => color !== undefined || strokeColor !== undefined || strokeWidth !== undefined ?
 `:host {${color === undefined ? "" : `
   --color: ${color};`}${strokeColor === undefined ? "" : `
-  --stroke-color: ${strokeColor};`}
+  --stroke-color: ${strokeColor};`}${strokeWidth === undefined ? "" : `
+  --stroke-width: ${strokeWidth};`}
 }
 ` : ""
 
@@ -178,50 +232,14 @@ const notReallyColors = [
 ]
 
 
-type ColorProps = {
+type UnifyAttrbProps = {
   allElems: Element[];
   nonEmpty: boolean;
   // @ts-ignore
-  colors: Set<unknown>;
-  onlyOneColor: boolean;
+  attrb: Set<unknown>;
+  onlyOneAttrb: boolean;
 }
 const parseSvgDecorators = {
-  colorify: () => (content: string) => {
-    const $ = cheerioHTML(content)
-    const {fill, stroke} = {
-      fill: unifyColorIfPossible($, "fill"),
-      stroke: unifyColorIfPossible($, "stroke")
-    }
-    
-    if (fill.nonEmpty && !stroke.nonEmpty) {
-      if (fill.onlyOneColor) {
-        fill.allElems.forEach((el) => {
-          $(el).attr("fill", "var(--color)")
-        })
-      }
-    }
-    if (stroke.nonEmpty && !fill.nonEmpty) {
-      if (stroke.onlyOneColor) {
-        stroke.allElems.forEach((el) => {
-          $(el).attr("stroke", "var(--color)")
-        })
-      }
-    }
-    if (stroke.nonEmpty && fill.nonEmpty) {
-      if (fill.onlyOneColor) {
-        fill.allElems.forEach((el) => {
-          $(el).attr("fill", "var(--color)")
-        })
-      }
-      if (stroke.onlyOneColor) {
-        stroke.allElems.forEach((el) => {
-          $(el).attr("stroke", "var(--stroke-color)")
-        })
-      }
-    };
-
-    return $("body").html()
-  },
   minimize: ({assumeWithoutStroke = false, pretty = true}: {assumeWithoutStroke?: boolean, pretty?: boolean}) => (content: string) => {
     try {
       const config = {
@@ -274,7 +292,7 @@ const parseSvgDecorators = {
 
 const fileExists = async (filename: string): Promise<boolean> => {
   try {
-    await Deno.stat(filename);
+    await fs.access(filename);
     return true;
   } catch (error) {
     return false;

@@ -1,14 +1,22 @@
-// deno-lint-ignore-file 
 import { render } from "pug"
 import { Document, load as loadCheerio } from "cheerio"
 import { camelCase } from "change-case"
 import chokidar from "chokidar"
 import path from "node:path"
+import pth from "node:path"
+import fss, {promises as fs} from "fs"
+declare const Bun: any
+import { program } from "commander"
+
+program
+  .option('-w, --watch')
+  .parse()
+
+const options = program.opts() as {watch?: boolean}
 
 
-const options = {
-  watch: Deno.args.includes("--watch")
-}
+
+
 
 
 
@@ -210,15 +218,29 @@ const componentIndex = new Map<string, {
 
 
 const kind = "add"
-const paths = []
+const paths = [] as string[]
 await readDirRecursiveOnce(rootPath, (path: string) => {
   updateComponentIndex(path, kind)
   paths.push(path)
 })
 
-const proms = []
+
+let proms = [] as Promise<any>[]
 for (const path of paths) {
   proms.push(handlePugUpdate(path, kind))
+}
+
+await Promise.all(proms)
+proms = []
+
+for (const filePath of paths) {
+  proms.push((async () => {
+    if (filePath.endsWith(".ts") && path.basename(path.dirname(filePath) + ".ts") === path.basename(filePath)) {
+      if (!await fileExists(path.join(path.dirname(filePath), "pugBody.gen.ts"))) {
+        await fs.writeFile(path.join(path.dirname(filePath), "pugBody.gen.ts"), `export interface BodyTypes {}`)
+      }
+    }
+  })())
 }
 await Promise.all(proms)
 console.log("PugToTypes: Done")
@@ -241,14 +263,15 @@ if (options.watch) {
 
 async function readDirRecursiveOnce(dir: string, func: (path: string) => (void | Promise<void>)) {
   const proms = [] as (void | Promise<void>)[]
-  const files = Deno.readDir(dir)
-  const subDirs = []
-  for await (const file of files) {
-    if (file.isDirectory) {
-      subDirs.push(file.name)
+  const files = await fs.readdir(dir)
+  const subDirs = [] as string[]
+  for await (const filePath of files) {
+    const file = await fs.stat(path.join(dir, filePath))
+    if (file.isDirectory()) {
+      subDirs.push(filePath)
     }
-    else if (file.isFile) {
-      proms.push(func(path.join(dir, file.name)))
+    else if (file.isFile()) {
+      proms.push(func(path.join(dir, filePath)))
     }
   }
 
@@ -280,7 +303,7 @@ function updateComponentIndex(dir: string, kind: "add" | "remove") {
 
 
 async function pugToTypes(pugFilePath: string) {
-  const pugContent = await Deno.readTextFile(pugFilePath)
+  const pugContent = await fs.readFile(pugFilePath, "utf8")
   const html = render(pugContent, { pretty: true })
   const $ = loadCheerio(html);
 
@@ -369,7 +392,7 @@ async function handlePugUpdate(dir: string, kind: "add" | "change") {
   const types = await pugToTypes(dir)
   const typesPath = path.join(path.dirname(dir), "pugBody.gen.ts")
 
-  await Deno.writeTextFile(typesPath, types)
+  await fs.writeFile(typesPath, types)
 }
 
 
@@ -406,3 +429,9 @@ function parseInterface(interfaceString: string): Map<string, string> {
   return map;
 }
 
+
+function fileExists(filePath: string) {
+  return fs.access(filePath)
+    .then(() => true)
+    .catch(() => false)
+}
