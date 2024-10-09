@@ -1,0 +1,44 @@
+:host {
+  display: block;
+  position: relative;
+  width: max-content;
+  height: max-content;
+}
+
+component-body {
+  display: flex;
+  height: 100%;
+  position: relative;
+  width: max-content;
+  height: max-content;
+}
+
+c-form {
+  margin: auto;
+}
+
+c-form > h1 {
+  margin-bottom: 16px;
+}
+
+c-form > * {
+  margin: 10px 0;
+  width: 300px;
+  max-width: 100%;
+}
+
+c-form > *:not(c-load-button) {
+  
+}
+
+/* todo:
+  Bug during show animation of popup FLOUC
+  Dont button --text color
+  Form enter on all inputs should call submit
+*/
+
+c-form > c-load-button {
+  --background: var(--primary-theme);
+  --text: var(--plain-background); /* This doesnt work... Icon is black and load prog probably too */
+  color: rgb(var(--plain-background));
+}

@@ -4,62 +4,45 @@ import {editor} from "monaco-editor"
 import sodium from 'libsodium-wrappers';
 import Notification from "../notification/notification";
 import NotificationBar from "../notificationBar/notificationBar";
+import * as crypto from "./../../lib/crypt"
+import Input from "../_themeAble/_focusAble/_formUi/_editAble/input/input";
+import BlockButton from "../_themeAble/_focusAble/_formUi/_rippleButton/_blockButton/blockButton";
+import Form from "../form/form";
+import { BodyTypes } from "./pugBody.gen"; import "./pugBody.gen"
 
 
-
-
-
-sodium.ready.then(() => {
-  console.log(sodium.crypto_secretbox_keygen())
-})
-
-
-const allSites = []
-
+export const notification = new NotificationBar()
 
 export default class Site extends Component {
-
+  protected body: BodyTypes
 
 
   constructor() {
     super()
 
-    allSites.push(this)
 
 
-    const n = new NotificationBar()
-    this.apd(n)
+    this.apd(notification)
 
-    n.error("test")
-    n.success("test", "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum?")
-    n.log("test", "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum?")
-    n.log("Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum?")
-    n.success("Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum?")
-    n.error("Lorem ipsum dolor sitttttt amet consectetur adipisicing elit. Quisquam, voluptatum?")
-    n.error("test", "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum?")
-    n.error("test")
-    n.success("test", "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum?")
-    n.log("test", "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum?")
-    n.log("Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum?")
-    n.success("Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum?")
-    n.error("Lorem ipsum dolor sitttttt amet consectetur adipisicing elit. Quisquam, voluptatum?")
-    n.error("test", "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum?")
-    
-    // @ts-ignore
-    window.n = n
 
     
     editor.create(this.body.editor as HTMLElement, {
       automaticLayout: true,
-      language: "typescript",
+      language: "plaintext",
       minimap: {enabled: false}
     })
 
 
+    // @ts-ignore
+    window.popup = this.body.popup
+
+  }
+  loginOrRegister() {
+    
   }
 
   stl() {
-    return require("dom-notifications/style") + require("../../../node_modules/monaco-editor/min/vs/editor/editor.main.css").toString() + require("./site.css").toString()
+    return require("../../../node_modules/monaco-editor/min/vs/editor/editor.main.css").toString() + require("./site.css").toString()
   }
   pug() {
     return require("./site.pug").default
