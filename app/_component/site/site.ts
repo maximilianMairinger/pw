@@ -29,8 +29,13 @@ export default class Site extends Component {
     editor.create(this.body.editor as HTMLElement, {
       automaticLayout: true,
       language: "plaintext",
-      minimap: {enabled: false}
+      minimap: {enabled: false},
+      suggestOnTriggerCharacters: false,
+      quickSuggestions: false,
+      autoIndent: "none",
     })
+
+    this.body.popup.popup()
 
 
     // @ts-ignore
