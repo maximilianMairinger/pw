@@ -27,16 +27,8 @@ c-form > * {
   max-width: 100%;
 }
 
-c-form > *:not(c-load-button) {
-  
-}
-
-/* todo:
-  Dont button --text color
-*/
 
 c-form > c-load-button {
   --background: var(--primary-theme);
-  --text: var(--plain-background); /* This doesnt work... Icon is black and load prog probably too */
-  color: rgb(var(--plain-background));
+  --text: var(--plain-background);
 }

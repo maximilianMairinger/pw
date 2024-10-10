@@ -14,7 +14,7 @@ move-me {
   right: 13px;
   opacity: 0;
   margin-right: -5px;
-  fill: rgb(var(--text))
+  --color: rgb(var(--text));
 }
 
 loading-circle {

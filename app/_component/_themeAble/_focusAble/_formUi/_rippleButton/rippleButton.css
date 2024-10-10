@@ -1,5 +1,6 @@
 :host {
   display: block;
+  color: rgb(var(--text))
 }
 
 c-button {
