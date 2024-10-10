@@ -6,6 +6,7 @@ import declareComponent from "./../../lib/declareComponent"
 import GUIButton from "./../_themeAble/_focusAble/_formUi/_rippleButton/rippleButton"
 import NButton from "./../_themeAble/_focusAble/_button/button"
 import { ElementList } from "extended-dom"
+import TextArea from "../_themeAble/_focusAble/_formUi/_editAble/textArea/textArea"
 type Button = GUIButton | NButton
 type SelectorToButton = string
 
@@ -18,12 +19,23 @@ export default class Form extends Component<false> {
     if (submitElement) {
       this.submitElement(submitElement)
     }
+
+    this.on("keydown", (e) => {
+      if (e.key === "Enter") {
+        if (!((e.target instanceof TextArea && !e.shiftKey) || e.target instanceof NButton || e.target instanceof GUIButton)) {
+          if (this._submitElement) (this._submitElement as Button).click()
+          else this.submitCall()
+        }
+      }
+    })
   }
   private unsubFromLastSubmitElement = () => {}
+  private _submitElement: SelectorToButton | Button
   submitElement(submitElement: SelectorToButton | Button) {
     if (typeof submitElement === "string") {
       submitElement = this.childs(submitElement) as any
     }
+    this._submitElement = submitElement
 
     const localUnsub = this.unsubFromLastSubmitElement
     setTimeout(() => {
@@ -31,13 +43,7 @@ export default class Form extends Component<false> {
 
       this.unsubFromLastSubmitElement();
       const cb = (submitElement as Button).addActivationCallback(async () => {
-        this.disableChilds(submitElement as Button)
-        const res = await this.submit()
-        res.push(() => {
-          this.enableChilds(submitElement as Button)
-        })
-
-        return res
+        return this.submitCall()
       })
       this.unsubFromLastSubmitElement = () => {
         (submitElement as Button).removeActivationCallback(cb)
@@ -46,6 +52,16 @@ export default class Form extends Component<false> {
     
 
 
+  }
+
+  private async submitCall() {
+    if (this._submitElement) this.disableChilds(this._submitElement as Button)
+    const res = await this.submit()
+    if (this._submitElement) res.push(() => {
+      this.enableChilds(this._submitElement as Button)
+    })
+
+    return res
   }
 
   public disableChilds(...except: (FormUi | Button)[]) {
