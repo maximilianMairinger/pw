@@ -1,6 +1,8 @@
 import RippleButton from "../rippleButton";
 import declareComponent from "../../../../../../lib/declareComponent";
 import { Data } from "josm";
+import { latestLatent } from "more-proms";
+import delay from "tiny-delay";
 
 
 export default class BlockButton extends RippleButton {
@@ -13,8 +15,23 @@ export default class BlockButton extends RippleButton {
     this.moveBody.apd(this.textElem)
   }
 
+  public animWithOnTxtChange = latestLatent(async (width: number) => {
+    this.textElem.css({ whiteSpace: "nowrap" })
+    await delay(200)
+    await this.textElem.anim({ width })
+  }).then(() => {
+    this.textElem.css({ whiteSpace: "" })
+    this.textElem.css({ width: "" })
+  })
 
-  content(to: string | Data<string>) {
+  content(to: string | Data<string>, morph = true) {
+    if (morph) {
+      const curTxt = this.textElem.txt()
+      this.textElem.text(to as any, false, false)
+      const toWidth = this.textElem.width()
+      this.textElem.text(curTxt as any, false, false)
+      this.animWithOnTxtChange(toWidth)
+    }
     this.textElem.text(to as any)
   }
   stl() {
