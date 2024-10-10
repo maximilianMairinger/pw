@@ -49,7 +49,7 @@ const _blurEverythingInBackground = latestLatent(function blurEverythingInBackgr
       blurElem.on("mousedown"), 
       parent.on("scroll", undefined, { velocity: true }), // Vel here is needed for popup to determine in which direction to fade on close
       document.body.on("resize")
-    ], 2).then((e) => {
+    ], 2).then((e: Event | T) => {
       if (e instanceof Event) {
         e.stopPropagation()
         e.preventDefault()
