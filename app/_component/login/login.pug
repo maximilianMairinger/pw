@@ -1,5 +1,7 @@
 c-form(name="form")
-  h1(name="heading") Login
+  h1(name="heading")
   c-input(placeholder="Username" type="text" name="username")
-  c-input(placeholder="Password" type="password" name="password")
-  c-load-button(name="submit" content="Done")
+  c-input(placeholder="Password" type="password" name="password").pw1
+  btn-group
+    c-block-button(name="switchMode")
+    c-load-button(name="submit")

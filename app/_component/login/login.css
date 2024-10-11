@@ -15,20 +15,48 @@ component-body {
 
 c-form {
   margin: auto;
+  display: flex;
+  width: max-content;
+  height: max-content;
+  flex-direction: column;
 }
 
 c-form > h1 {
   margin-bottom: 16px;
+  margin-top: 10px;
 }
 
 c-form > * {
-  margin: 10px 0;
+  margin-top: 10px;
   width: 300px;
   max-width: 100%;
 }
 
+c-form > *:first-child {
+  margin-top: 0;
+}
 
-c-form > c-load-button {
+c-form > .pw1 {
+  margin-bottom: 10px;
+}
+
+c-form > .pw2 {
+  margin-top: 0;
+}
+
+btn-group {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  margin-top: 15px;
+}
+
+btn-group > * {
+  width: max-content;
+}
+
+
+c-form c-load-button {
   --background: var(--primary-theme);
   --text: var(--plain-background);
 }
