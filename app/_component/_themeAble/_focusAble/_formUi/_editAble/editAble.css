@@ -53,6 +53,7 @@ placeholder-text {
   background: transparent;
   font-size: 14px;
   font-family: inherit;
+  z-index: 2;
 }
 
 #editAble {
@@ -68,6 +69,6 @@ placeholder-text {
 }
 
 
-:host(.invalid:not(.writing)) {
+:host(.showInvalidation) {
   --background: 255, 0, 0;
 }

@@ -42,22 +42,17 @@ export default class EditAble<T = string> extends FormUi<HTMLElement> {
     this.enabled.get((enabled) => {
       if (enabled) {
         this.inputElem.tabIndex = 0
-        clickListener.activate()
       }
       else {
         this.inputElem.tabIndex = -1
-        clickListener.deactivate()
       }
     }, false)
 
 
-    toggleClass(this, this.enabled, "enabled")
+    
 
     const currentlyInvalid = this.currentlyInvalid = new Data(false)
-    toggleClass(this, currentlyInvalid, "invalid")
-
     const currentlyWriting = new Data(false)
-    toggleClass(this, currentlyWriting, "writing")
 
     this.on("blur", () => {
       currentlyWriting.set(false)
@@ -73,6 +68,17 @@ export default class EditAble<T = string> extends FormUi<HTMLElement> {
     const sub1 = this.value.get((v) => {
       sub2.setToData(v + "")
     }, false)
+
+    const showInvalidation = new Data(false)
+    currentlyInvalid.get((invalid) => {
+      if (invalid) showInvalidation.set(currentlyWriting.get())
+      else showInvalidation.set(false)
+    }, false)
+    currentlyWriting.get((writing) => {
+      if (writing) showInvalidation.set(currentlyInvalid.get())
+      else showInvalidation.set(currentlyInvalid.get())
+    }, false)
+    toggleClass(this, showInvalidation, "showInvalidation")
 
     
     const currentErrorMsg = this.currentErrorMsg = new Data(null) as any
@@ -91,6 +97,9 @@ export default class EditAble<T = string> extends FormUi<HTMLElement> {
 
     currentlyInvalid.get((e) => {
       console.log("invalid", e)
+    })
+    showInvalidation.get((e) => {
+      console.log("showInvalidation", e)
     })
 
     
@@ -121,9 +130,6 @@ export default class EditAble<T = string> extends FormUi<HTMLElement> {
       this.placeholderText.css({fontWeight: isEmpty ? "normal" : "bold"})
     })
 
-    const clickListener = this.on("click", () => {
-      inputElem.focus()
-    })
   }
   focus() {
     this.inputElem.focus()
