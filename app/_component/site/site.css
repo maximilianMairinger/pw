@@ -13,6 +13,10 @@ editor-container {
   position: relative;
 }
 
+c-notification-bar {
+  z-index: 90;
+}
+
 /* @font-face {
   font-family: 'Overpass';
   font-style: normal;

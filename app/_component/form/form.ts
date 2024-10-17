@@ -7,6 +7,8 @@ import GUIButton from "./../_themeAble/_focusAble/_formUi/_rippleButton/rippleBu
 import NButton from "./../_themeAble/_focusAble/_button/button"
 import { ElementList } from "extended-dom"
 import TextArea from "../_themeAble/_focusAble/_formUi/_editAble/textArea/textArea"
+import { ReadonlyData } from "josm"
+import { site } from "../../main"
 type Button = GUIButton | NButton
 type SelectorToButton = string
 
@@ -55,6 +57,15 @@ export default class Form extends Component<false> {
   }
 
   private async submitCall() {
+    for (const elem of this.getAllFormUiChilds()) {
+      if ("currentlyInvalid" in elem) {
+        if ((elem.currentlyInvalid as ReadonlyData<boolean>).get()) {
+          elem.focus()
+          site.notification.error("Please fill out all fields correctly")
+          return
+        }
+      }
+    }
     if (this._submitElement) this.disableChilds(this._submitElement as Button)
     const res = await this.submit()
     if (this._submitElement) res.push(() => {

@@ -11,10 +11,10 @@ import Form from "../form/form";
 import { BodyTypes } from "./pugBody.gen"; import "./pugBody.gen"
 
 
-export const notification = new NotificationBar()
 
 export default class Site extends Component {
   protected body: BodyTypes
+  public notification = new NotificationBar()
 
 
   constructor() {
@@ -22,7 +22,7 @@ export default class Site extends Component {
 
 
 
-    this.apd(notification)
+    this.apd(this.notification)
 
 
     

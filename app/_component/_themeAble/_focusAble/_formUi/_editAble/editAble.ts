@@ -1,14 +1,27 @@
-import { Data, DataCollection } from "josm";
+import { Data, DataCollection, DataSubscription, ReadonlyData } from "josm";
 import FormUi from "../formUi";
+import { josmEditAbleReflection, josmEventReflection } from "josm-adapter"
+import sani from "sanitize-against"
 
+function toggleClass(elem: Element, data: ReadonlyData<boolean>, className: string) {
+  data.get((bool) => {
+    if (bool) elem.addClass(className)
+    else elem.removeClass(className)
+  })
 
-type ReadonlyData<T> = Omit<Data<T>, "set">
+}
 
-export default class EditAble extends FormUi {
+export default class EditAble<T = string> extends FormUi<HTMLElement> {
 
   
+  private _value = josmEditAbleReflection(this.inputElem, "");
+  public value: Data<T>
   public isEmpty: ReadonlyData<boolean>
-  public value: ReadonlyData<string>
+
+  public validate: (inp: string) => T = (a) => a as T
+  public currentErrorMsg: ReadonlyData<string | null>
+  public currentlyInvalid: ReadonlyData<boolean>
+
 
   protected placeholderContainer = ce("placeholder-container")
   
@@ -37,12 +50,52 @@ export default class EditAble extends FormUi {
       }
     }, false)
 
-    
+
+    toggleClass(this, this.enabled, "enabled")
+
+    const currentlyInvalid = this.currentlyInvalid = new Data(false)
+    toggleClass(this, currentlyInvalid, "invalid")
+
+    const currentlyWriting = new Data(false)
+    toggleClass(this, currentlyWriting, "writing")
+
+    this.on("blur", () => {
+      currentlyWriting.set(false)
+    })
+    this.inputElem.on("keydown", ({ key, shiftKey }) => {
+      if (key === "Enter" && !shiftKey) {
+        currentlyWriting.set(false)
+      }
+    })
+
+
+    this.value = new Data()
+    const sub1 = this.value.get((v) => {
+      sub2.setToData(v + "")
+    }, false)
 
     
-    const value = (this as any).value = new Data("")
-    this.inputElem.on("input", () => {(this.value as Data<string>).set(this.inputElem.value)})
-    const isEmpty = (this as any).isEmpty = value.tunnel((v) => v === "")
+    const currentErrorMsg = this.currentErrorMsg = new Data(null) as any
+    const sub2 = this._value.get((s) => {
+      currentlyWriting.set(true)
+      try {
+        sub1.setToData(this.validate(s))
+        currentlyInvalid.set(false)
+        currentErrorMsg.set(null)
+      }
+      catch(e) {
+        currentlyInvalid.set(true)
+        currentErrorMsg.set(e.message)
+      }
+    })
+
+    currentlyInvalid.get((e) => {
+      console.log("invalid", e)
+    })
+
+    
+    
+    const isEmpty = (this as any).isEmpty = this._value.tunnel((v) => v === "")
 
     this.placeholderUp = new Data(false) as any
     new DataCollection(this.isFocused as Data<boolean>, isEmpty).get((isFocused, isEmpty) => {

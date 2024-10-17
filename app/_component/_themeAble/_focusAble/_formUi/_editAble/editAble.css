@@ -66,3 +66,8 @@ placeholder-text {
   padding-top: 14px; /* a - 9 */
   padding-bottom: 0;
 }
+
+
+:host(.invalid:not(.writing)) {
+  --background: 255, 0, 0;
+}
