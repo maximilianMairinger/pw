@@ -6,7 +6,7 @@ import { Data } from "josm";
 import Input from "../_themeAble/_focusAble/_formUi/_editAble/input/input";
 import { morphComputedStyle } from "../../lib/morphStyle";
 import { latestLatent } from "more-proms";
-import sanitize, { numberLikePattern } from "sanitize-against";
+import sanitize, { ensure, numberLikePattern, regex } from "sanitize-against";
 
 
 
@@ -75,7 +75,9 @@ export default class Login extends Component {
 
 
 
-    this.body.username.validate = sanitize(numberLikePattern) as any
+    this.body.username.validate = sanitize(regex(/^[0-9A-Za-z\-\_]{1,32}$/)) as any
+    this.pwConfirmInput.validate = sanitize(ensure((pw) => pw === this.body.password.value.get(), "Passwords don't match")) as any
+
   }
 
   query() {
