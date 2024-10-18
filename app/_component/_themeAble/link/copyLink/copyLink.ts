@@ -32,7 +32,11 @@ export default class CopyLink extends Link {
     }
 
     loadRecord.full.add(async () => {
-      copyFeedback = (await import("./tippyFeedback")).default(this)
+      const tip = (await import("../../../../lib/tippyFeedback")).default(this, {content: lang.copiedFeedback, trigger: "manual"})
+      copyFeedback = () => {
+        tip.show()
+        delay(1500).then(() => tip.hide())
+      }
     })
     
     this.addActivationListener(() => {  

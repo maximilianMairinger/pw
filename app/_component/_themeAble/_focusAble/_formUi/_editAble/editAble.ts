@@ -2,6 +2,7 @@ import { Data, DataCollection, DataSubscription, ReadonlyData } from "josm";
 import FormUi from "../formUi";
 import { josmEditAbleReflection, josmEventReflection } from "josm-adapter"
 import sani from "sanitize-against"
+import makeTippy from "../../../../../lib/tippyFeedback";
 
 function toggleClass(elem: Element, data: ReadonlyData<boolean>, className: string) {
   data.get((bool) => {
@@ -94,6 +95,18 @@ export default class EditAble<T = string> extends FormUi<HTMLElement> {
         currentErrorMsg.set(e.message)
       }
     }, false)
+
+    const tip = makeTippy(this, {
+      content: this.currentErrorMsg,
+      placement: "right"
+    })
+
+    currentlyInvalid.get((invalid) => {
+      if (!invalid) tip.setProps({trigger: "manual"})
+      else tip.setProps({trigger: "mouseenter focus"})
+    })
+
+
 
     
     

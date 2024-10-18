@@ -75,7 +75,7 @@ export default class Login extends Component {
 
 
 
-    this.body.username.validate = sanitize(regex(/^[0-9A-Za-z\-\_]{1,32}$/)) as any
+    this.body.username.validate = sanitize(regex(/^[0-9A-Za-z\-\_]{1,32}$/, "Username can only contain letters or number")) as any
     this.pwConfirmInput.validate = sanitize(ensure((pw) => pw === this.body.password.value.get(), "Passwords don't match")) as any
 
   }
