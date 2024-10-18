@@ -12,12 +12,13 @@ export default class Input extends EditAble {
     
     setTimeout(() => {
       // wait till styles get applied. So that scrollData can access correct overflow direction with getComputedStyle
-      const scrollStart = this.inputElem.scrollData().tunnel((p) => p === 0) as Data<boolean>
+      const scrollStart = this.inputElem.scrollData(false, "x").tunnel((p) => p === 0) as Data<boolean>
+
       scrollStart.get((is) => {
         this.componentBody[is ? "addClass" : "removeClass"]("scrollStart")
       })
   
-      const scrollEnd = this.inputElem.scrollData(true).tunnel((p) => p >= this.inputElem.scrollWidth -1) as Data<boolean>
+      const scrollEnd = this.inputElem.scrollData(true, "x").tunnel((p) => p >= this.inputElem.scrollWidth -1) as Data<boolean>
       scrollEnd.get((is) => {
         this.componentBody[is ? "addClass" : "removeClass"]("scrollEnd")
       })
