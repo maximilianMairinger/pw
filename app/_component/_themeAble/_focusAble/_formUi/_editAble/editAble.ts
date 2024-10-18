@@ -71,7 +71,7 @@ export default class EditAble<T = string> extends FormUi<HTMLElement> {
 
     const showInvalidation = new Data(false)
     currentlyInvalid.get((invalid) => {
-      if (invalid) showInvalidation.set(currentlyWriting.get())
+      if (invalid) showInvalidation.set(!currentlyWriting.get())
       else showInvalidation.set(false)
     }, false)
     currentlyWriting.get((writing) => {
@@ -93,14 +93,7 @@ export default class EditAble<T = string> extends FormUi<HTMLElement> {
         currentlyInvalid.set(true)
         currentErrorMsg.set(e.message)
       }
-    })
-
-    currentlyInvalid.get((e) => {
-      console.log("invalid", e)
-    })
-    showInvalidation.get((e) => {
-      console.log("showInvalidation", e)
-    })
+    }, false)
 
     
     
@@ -121,7 +114,7 @@ export default class EditAble<T = string> extends FormUi<HTMLElement> {
 
       let localAnimDone = globalAnimDone = Symbol()
       this.componentBody.removeClass("animDone")
-      this.placeholderText.anim(up ? {paddingTop: 7, fontSize: 12} : {paddingTop: 14, fontSize: 14}, 200).then(() => {
+      this.placeholderText.anim(up ? {paddingTop: 7, fontSize: 12} : {paddingTop: 15, fontSize: 14}, 200).then(() => {
         if (localAnimDone === globalAnimDone) this.componentBody.addClass("animDone")
       })
     })
@@ -136,6 +129,9 @@ export default class EditAble<T = string> extends FormUi<HTMLElement> {
   }
   placeholder(to: string) {
     this.placeholderText.text(to)
+  }
+  type(type: string) {
+    this.inputElem.setAttribute("type", type)
   }
   public pug(): string {
     return super.pug() + require("./editAble.pug").default
