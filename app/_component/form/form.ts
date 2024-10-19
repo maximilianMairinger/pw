@@ -22,11 +22,17 @@ export default class Form extends Component<false> {
       this.submitElement(submitElement)
     }
 
-    this.on("keydown", (e) => {
+    this.on("keydown", async (e) => {
       if (e.key === "Enter") {
         if (!((e.target instanceof TextArea && !e.shiftKey) || e.target instanceof NButton || e.target instanceof GUIButton)) {
           if (this._submitElement) (this._submitElement as Button).click()
-          else this.submitCall()
+          else {
+            const res = await this.submitCall()
+            for (const f of res) {
+              if (f instanceof Function) f()
+              else console.warn("Is this state needed. Dunno atm")
+            }
+          }
         }
       }
     })
@@ -58,21 +64,30 @@ export default class Form extends Component<false> {
 
   private async submitCall() {
     for (const elem of this.getAllFormUiChilds()) {
-      if ("currentlyInvalid" in elem) {
-        if ((elem.currentlyInvalid as ReadonlyData<boolean>).get()) {
-          elem.focus()
-          site.notification.error("Please fill out all fields correctly")
+      if ("checkIfValid" in elem && elem.checkIfValid instanceof Function) {
+        if (elem.checkIfValid()) {
+          // elem.focus()
+          site.notification.error("Unable to submit", "Please check all fields for errors")
           return
         }
       }
     }
     if (this._submitElement) this.disableChilds(this._submitElement as Button)
-    const res = await this.submit()
-    if (this._submitElement) res.push(() => {
-      this.enableChilds(this._submitElement as Button)
-    })
-
-    return res
+    else this.disableChilds()
+    try {
+      const res = await this.submit()
+      res.push(() => {
+        if (this._submitElement) this.enableChilds(this._submitElement as Button)
+        else this.enableChilds() 
+      })
+      
+      return res
+    }
+    catch(e) {
+      if (this._submitElement) this.enableChilds(this._submitElement as Button)
+      else this.enableChilds()
+      throw e
+    }
   }
 
   public disableChilds(...except: (FormUi | Button)[]) {
