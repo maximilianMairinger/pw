@@ -24,10 +24,10 @@ export default class LoadButton extends BlockButton {
           (ret as Promise<any[]>).then(arr => res(arr.flat())).catch((errF) => res([errF]))
         })
         
-        const intrested = cbs.then(arr => !arr.clean().empty)
+        const interested = cbs.then(arr => !arr.clean().empty)
         const doneShowAnim = this.showLoadingAnimationFor(ret as Promise<any>);
 
-        const doneAnim = intrested.then((yes) => 
+        const doneAnim = interested.then((yes) => 
           yes ? doneShowAnim.then(this.succLoading.bind(this)).catch(this.errorLoading.bind(this)) :
           doneShowAnim.then(this.stopLoading.bind(this)).catch(this.errorLoading.bind(this))
         )
@@ -152,6 +152,21 @@ export default class LoadButton extends BlockButton {
           opacity: 0,
           marginRight: -5
         }),
+        // shake
+        this.anim((() => {
+          const a = []
+          const ease = new Easing("easeOut").function
+          const max = 13
+          const pxAmplitude = 6
+          let signToggle = true
+          for (let i = 0; i <= max; i++) {
+            const sign = signToggle ? 1 : -1
+            signToggle = !signToggle
+            const prog = i / max
+            a.push({ translateX: pxAmplitude * sign * (1-ease(prog)) })
+          }
+          return a
+        })(), { easing: "linear", duration: 800 }),
         this.moveTextBack()
       ])
       this.loadingCircle.remove()
