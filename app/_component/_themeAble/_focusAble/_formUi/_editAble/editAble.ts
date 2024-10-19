@@ -118,7 +118,10 @@ export default class EditAble<T = string> extends FormUi<HTMLElement> {
     })
 
     showInvalidation.get((invalid) => {
-      if (!invalid) tip.setProps({trigger: "manual"})
+      if (!invalid) {
+        tip.setProps({trigger: "manual"})
+        tip.hide()
+      }
       else tip.setProps({trigger: "mouseenter focus"})
     })
 
@@ -152,6 +155,11 @@ export default class EditAble<T = string> extends FormUi<HTMLElement> {
       this.placeholderText.css({fontWeight: isEmpty ? "normal" : "bold"})
     })
 
+
+    isEmpty.get((isEmpty) => {
+      this.inInitState.set(isEmpty)
+    })
+    
   }
 
   private recalcValidData = new Data(false)

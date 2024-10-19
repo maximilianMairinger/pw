@@ -10,10 +10,9 @@ export const makeTippy = ((root: HTMLElement, optionalProps?: any) => {
   if (optionalProps.content === undefined) throw new Error("content is required")
   if (typeof optionalProps.content === "object" && optionalProps.content[instanceTypeSym] === "Data") {
     const data = optionalProps.content
-    optionalProps.content = data.get()
-    data.get((s: string) => {
-      tip.setContent(s)
-    }, false)
+    optionalProps.content
+    const elem = optionalProps.content = ce("span")
+    elem.txt(data)
   }
   if (!("animation" in optionalProps)) optionalProps.animation = 'shift-away-subtle' 
 
