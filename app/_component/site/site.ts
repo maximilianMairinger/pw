@@ -9,6 +9,7 @@ import Input from "../_themeAble/_focusAble/_formUi/_editAble/input/input";
 import BlockButton from "../_themeAble/_focusAble/_formUi/_rippleButton/_blockButton/blockButton";
 import Form from "../form/form";
 import { BodyTypes } from "./pugBody.gen"; import "./pugBody.gen"
+import delay from "tiny-delay";
 
 
 
@@ -36,6 +37,10 @@ export default class Site extends Component {
     })
 
     this.body.popup.popup()
+    this.body.login.query(async () => {
+      await delay(1000)
+      return false
+    })
 
 
     // @ts-ignore

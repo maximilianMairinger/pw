@@ -6,7 +6,9 @@ import { Data } from "josm";
 import Input from "../_themeAble/_focusAble/_formUi/_editAble/input/input";
 import { morphComputedStyle } from "../../lib/morphStyle";
 import { latestLatent } from "more-proms";
-import sanitize, { ensure, numberLikePattern, regex } from "sanitize-against";
+import sanitize, { ensure, numberLikePattern, regex, AND } from "sanitize-against";
+import { site } from "../../main";
+import { Head } from "fast-linked-list";
 
 
 
@@ -75,20 +77,83 @@ export default class Login extends Component {
 
 
 
-    this.body.username.validate = sanitize(regex(/^[0-9A-Za-z\-\_]{1,32}$/, "Username can only contain letters or number")) as any
-    this.pwConfirmInput.validate = sanitize(ensure((pw) => pw === this.body.password.value.get(), "Passwords don't match")) as any
+    this.body.username.validation.set(sanitize(
+      new AND(
+        regex(/^.{1,}$/, "Username must be non empty"),
+        regex(/^.{0,35}$/, "Username must shorter than 36 characters"), 
+        regex(/^[0-9A-Za-z\-\_]*$/, "Username can only contain letters or number"),
+        (username) => {
+          if (this.falseUserNamePwIndex.has(JSON.stringify([username, this.body.password.value.get()]))) {
+            throw new Error("Username or password is wrong")
+          }
+          return username
+        }
+      )
+    ))
+
+    this.body.password.validation.set(sanitize(
+      new AND(
+        String,
+        (password) => {
+          if (this.falseUserNamePwIndex.has(JSON.stringify([this.body.username.value.get(), password]))){
+            throw new Error("Username or password is wrong")
+          }
+          return password
+        }
+      )
+    ))
+
+
+    this.pwConfirmInput.validation.set(sanitize(ensure((pw) => pw === this.body.password.value.get(), "Passwords don't match")) as any)
 
   }
 
-  query() {
+  private falseUserNamePwIndex = new Set()
+  private falseUserNameIndex = new Set()
+
+  query(check: (mode: "login" | "register", credentials: {username: string, password: string}) => (boolean | {ok: boolean, msg: Body | [Header, Body]} | Promise<boolean | {ok: boolean, msg: Body | [Header, Body]}>)) {
     this.pwConfirmInput.value.set("")
     this.body.password.value.set("")
     this.body.username.value.set("")
     this.mode.set("login")
-    return new Promise<{username: string, password: string}>((res) => {
-      const cb = this.body.form.submit(async (e) => {
-        res(e)
-        cb.remove()
+    type Username = string
+    return new Promise<Username>((res) => {
+      const cb = this.body.form.submit(async (creds) => {
+        const checkResP = check(this.mode.get(), creds)
+        const checkRes = checkResP instanceof Promise ? await checkResP : checkResP
+        const ok = typeof checkRes === "object" ? checkRes.ok : checkRes
+        const msg = typeof checkRes === "object" ? checkRes.msg : null
+
+        if (!ok) {
+          if (this.mode.get() === "register") {
+            this.falseUserNameIndex.add(creds.username)
+            this.body.username.recalculateValidation()
+          }
+          else if (this.mode.get() === "login") {
+            this.falseUserNamePwIndex.add(JSON.stringify([creds.username, creds.password]))
+            this.body.username.recalculateValidation()
+            this.body.password.recalculateValidation()
+            this.body.username.on("input", () => {this.body.password.recalculateValidation()}, {once: true})
+            this.body.password.on("input", () => {this.body.username.recalculateValidation()}, {once: true})
+          }
+          
+          if (msg !== null) site.notification.error(...((msg instanceof Array ? msg : [msg]) as [string, string?]))
+          else {
+            if (this.mode.get() === "register") site.notification.error("Failed to register", "Your username might already be taken")
+            else site.notification.error("Failed to authenticate", "Please check your username and password")
+          }
+          throw new Error()
+        }
+        else {
+          if (msg !== null) site.notification.success(...((msg instanceof Array ? msg : [msg]) as [string, string?]))
+          else {
+            if (this.mode.get() === "register") site.notification.success("Successfully registered")
+            else site.notification.success("Successfully authenticated")
+          }
+
+          res(creds.username)
+          cb.remove()
+        }
       })
     })
   }
@@ -102,3 +167,7 @@ export default class Login extends Component {
 }
 
 declareComponent("c-login", Login)
+
+
+type Header = string
+type Body = string
