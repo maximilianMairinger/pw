@@ -1,4 +1,4 @@
-import localSettings from "./localSettings"
+import { josmLocalStorageReflection } from "josm-adapter"
 
-export const cookieSettings = localSettings<boolean>("allowCookies", null)
+export const cookieSettings = josmLocalStorageReflection<boolean>("allowCookies", null)
 export default cookieSettings

@@ -4,6 +4,7 @@ component-body {
   right: 0;
   top: 0;
   bottom: 0;
+  --theme: var(--primary-theme);
 }
 
 editor-container {

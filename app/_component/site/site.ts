@@ -10,8 +10,13 @@ import BlockButton from "../_themeAble/_focusAble/_formUi/_rippleButton/_blockBu
 import Form from "../form/form";
 import { BodyTypes } from "./pugBody.gen"; import "./pugBody.gen"
 import delay from "tiny-delay";
+import * as client from "../../lib/msgpackClient";
+import { DataBase } from "josm";
 
 
+const userData = new DataBase({
+  username: ""
+})
 
 export default class Site extends Component {
   protected body: BodyTypes
@@ -34,21 +39,38 @@ export default class Site extends Component {
       suggestOnTriggerCharacters: false,
       quickSuggestions: false,
       autoIndent: "none",
-    })
+    });
 
-    this.body.popup.popup()
-    this.body.login.query(async () => {
-      await delay(1000)
-      return false
-    })
-
-
-    // @ts-ignore
-    window.popup = this.body.popup
+    (async () => {
+      try {
+        const res = await client.post("/checkAuth", {lel: "lelelele"}) as any
+        if (!res.ok) throw new Error()
+        userData.username.set(res.username)
+      }
+      catch(e) {
+        this.loginOrRegister()
+      }
+    })()
 
   }
   loginOrRegister() {
-    
+    const closePopup = this.body.popup.popup()
+    this.body.login.query(async (mode, creds) => {
+      try {
+        const resp = await client.post(modeToReqUrl[mode], creds) as any
+        if (!resp.ok) throw new Error()
+        closePopup()
+        client.sessionToken.set(resp.sessionToken)
+        debugger
+        return {
+          ok: true,
+          msg: [`Successfully ${mode === "login" ? "Logged in" : "Registered"}!`, `You are now logged in as ${creds.username}.`]
+        }
+      }
+      catch(e) {
+        return false
+      }
+    })
   }
 
   stl() {
@@ -57,6 +79,11 @@ export default class Site extends Component {
   pug() {
     return require("./site.pug").default
   }
+}
+
+const modeToReqUrl = {
+  login: "/login",
+  register: "/addUser"
 }
 
 declareComponent("site", Site)

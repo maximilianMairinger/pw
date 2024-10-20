@@ -8,10 +8,10 @@ import fs from "fs"
 import detectPort from "detect-port"
 import ws, { WebSocketServer, WebSocket } from "ws"
 import keyIndex from "key-index"
+import { decode, encode } from "circ-msgpack"
 
 
 const defaultPortStart = 3050
-
 
 
 
@@ -20,15 +20,19 @@ export type SendFileProxyFunc = (file: string, ext: string, fileName: string) =>
 export async function configureExpressApp(indexUrl: string, publicPath: string, sendFileProxy?: Promise<SendFileProxyFunc> | SendFileProxyFunc, middleware?: (app: express.Express) => express.Express | void) {
   if (indexUrl !== "*") if (!indexUrl.startsWith("/")) indexUrl = "/" + indexUrl
 
-  let app = express() as express.Express & { 
+
+
+  let app = express() as any as Omit<express.Express, "post"> & { 
     port: number, 
     getWebSocketServer: (url: `/${string}`) => WebSocketServer,
     ws: (url: `/${string}`, cb: (ws: WebSocket & {on: WebSocket["addEventListener"], off: WebSocket["removeEventListener"]}, req: any) => void) => void,
+    post: (url: Parameters<express.Express["post"]>[0], cb: (req: Parameters<Parameters<express.Express["post"]>[1]>[0], res: Parameters<Parameters<express.Express["post"]>[1]>[1] & {sendMsgPack(data: any): void}, next: Parameters<Parameters<express.Express["post"]>[1]>[2]) => ReturnType<Parameters<express.Express["post"]>[1]>) => ReturnType<express.Express["post"]>
   }
   
   
 
   if (middleware) {
+    //@ts-ignore
     let q = middleware(app)
     if (q !== undefined && q !== null) app = q as any
   }
@@ -55,14 +59,37 @@ export async function configureExpressApp(indexUrl: string, publicPath: string, 
 
   app.use(express.static(pth.join(pth.resolve(""), publicPath), {index: false}))
 
+  app.use((req, res, next) => {
+    if (req.headers['content-type'] === 'application/msgpack') {
+      let data = []
+      req.on('data', chunk => {
+        data.push(chunk)
+      })
+      req.on('end', () => {
+        req.body = decode(Buffer.concat(data))
+        next()
+      })
+    } else {
+      next()
+    }
+  })
+
+  app.use(function (req, res, next) { 
+    // @ts-ignore
+    res.sendMsgPack = (res) => {
+      res.send(encode(res))
+    }
+    next()
+  })
+
 
 
   //@ts-ignore
-  app.old_get = app.get
+  const oldGet = app.get.bind(app)
   //@ts-ignore
   app.get = (url: string, cb: (req: any, res: any, next) => void) => {
     //@ts-ignore
-    app.old_get(url, (req, res, next) => {
+    oldGet(url, (req, res, next) => {
       res.old_sendFile = res.sendFile
       res.sendFile = sendFileProxyLoaded(res)
       cb(req, res, next)

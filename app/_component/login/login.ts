@@ -104,6 +104,11 @@ export default class Login extends Component {
     ))
 
 
+    // TODO:
+    // This logic is bugged. When logging in failing clicking register: the check if pw are the same is not done. The main pw input field is red, but its register state... 
+    // The check for already tried pws doesnt work anyways...
+
+
     this.pwConfirmInput.validation.set(sanitize(ensure((pw) => pw === this.body.password.value.get(), "Passwords don't match")) as any)
 
   }
